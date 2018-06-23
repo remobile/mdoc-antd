@@ -158,13 +158,11 @@ export function getCheckRules(rules) {
             }
         } } ];
     }
-    if (rules === 'telephone') {
-        return [ { validator: checkTelePhone } ];
-    }
-    if (rules === 'sitephone') {
-        return [ { validator: checkSitePhone } ];
-    }
-    if (rules === 'phone') {
-        return [ { validator: checkPhone } ];
-    }
+    const maps = {
+        telephone: checkTelePhone,
+        sitephone: checkSitePhone,
+        phone: checkPhone,
+    };
+
+    return [ { validator: maps[rules] } ];
 }
