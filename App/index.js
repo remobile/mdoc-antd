@@ -3,7 +3,7 @@ import antd_form_create from 'decorators/antd_form_create';
 import styles from './index.less';
 import _ from 'lodash';
 import { Form } from 'antd';
-import { TextFormItem, NumberFormItem } from 'components';
+import { PlainFormItem, TextFormItem, NumberFormItem } from 'components';
 import { showError, getCheckRules } from 'utils';
 
 @antd_form_create
@@ -22,11 +22,29 @@ export class MdocForm extends React.Component {
     }
     renderFormItem(item) {
         const { form } = this.props;
-        const { type, label, key, maxLength, rules, min, step, max, required, default='' } = item;
-        switch(type) {
-            case: 'text':
-            return <TextFormItem editing form={form} label={label} value={{ [key]: default }} maxLength={maxLength} rules={getCheckRules(rules)} />;
+        const {
+            type,
+            label,
+            key,
+            maxLength,
+            min,
+            step,
+            max,
+            required,
+            unit,
+            precision = 0,
+            defaultValue ='',
+        } = item;
+        const rules = getCheckRules(item.rules);
+        switch (type) {
+            case 'text':
+                return <TextFormItem editing form={form} label={label} value={{ [key]: defaultValue }} maxLength={maxLength} rules={rules} />;
             break;
+            case 'number':
+                return <NumberFormItem editing form={form} label={label} value={{ [key]: defaultValue }} min={min} step={step} max={max} maxLength={maxLength} rules={rules} precision={precision} unit={unit} />;
+            break;
+            default:
+                return <PlainFormItem label={label} value={defaultValue} unit={unit} />;
         }
 
     }
@@ -35,10 +53,6 @@ export class MdocForm extends React.Component {
         return (
             <Form>
                 { model.map(o=>::this.renderFormItem(o)) }
-                <TextFormItem form={form} editing label='发货人电话' value={{ senderPhone: '' }} maxLength={11} rules={[ { validator: checkTelePhone } ]} />
-                <NumberFormItem form={form} editing label='重量' value={{ weight: '' }} unit='吨' min={0.01} step={0.1} max={100} maxLength={5} rules={[ { validator: checkInt2PointNum } ]} />
-                <NumberFormItem form={form} editing label='方量' value={{ size: '' }} unit='方' min={0.01} step={0.1} max={100} maxLength={5} rules={[ { validator: checkInt2PointNum } ]} />
-                <NumberFormItem form={form} editing label='件数' value={{ totalNumbers: '' }} unit='件' min={1} step={1} max={1000} maxLength={4} precision={0} />
             </Form>
         );
     }
