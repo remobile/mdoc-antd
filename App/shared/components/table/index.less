@@ -1,0 +1,30 @@
+.container {
+    flex: 1;
+    overflow: visible;
+}
+.table {
+    :global(.last_selected) {
+        background-color: #FFD39B;
+    }
+    :global(.last_selected:hover) {
+      background-color: #FFD39B !important;
+    }
+}
+.pageTable {
+    :global(.ant-pagination-prev), :global(.ant-pagination-next) {
+        min-width: 0px !important;
+    }
+}
+.unit {
+    margin-left: 2px;
+    color: #CD2626;
+}
+.baseValueContainer{
+    display: flex;
+    flex-direction: column;
+}
+.baseValue {
+    margin-top: 6px;
+    font-size: 10px;
+    color: red;
+}

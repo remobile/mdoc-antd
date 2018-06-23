@@ -1,0 +1,34 @@
+.photo {
+    width: 200px;
+    height: 100px;
+}
+.roadmapModal {
+    top: 30px;
+    width: 1000px !important;
+    :global(.ant-modal-body) {
+        padding: 0;
+    }
+}
+.roadmapModalNoButton {
+    top: 30px;
+    width: 1000px !important;
+    :global(.ant-modal-body) {
+        padding: 0;
+    }
+    :global(.ant-modal-footer) {
+        :global(.ant-btn-primary) {
+            display: none;
+        }
+    }
+}
+.qrcodeModal {
+    top: 0px;
+    left: 0px;
+    width: 100% !important;
+    :global(.ant-modal-content) {
+        border-radius: 0 !important;
+    }
+    :global(.ant-modal-content) {
+        box-shadow: none;
+    }
+}

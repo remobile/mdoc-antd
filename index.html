@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <link rel="stylesheet" type="text/css" href="./build/mdoc-form.css">
+    <script src="./thirdparty/react.min.js"></script>
+    <script src="./thirdparty/react-dom.min.js"></script>
+    <script src="./build/mdoc-form.js"></script>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+    ReactDOM.render(
+        React.createElement(MdocForm, { click: function(){ alert('123') }}, 'Hello, worl1d!'),
+        document.getElementById('app')
+    );
+    </script>
+</body>
+</html>
