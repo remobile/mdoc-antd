@@ -12,7 +12,49 @@
     <div id="app"></div>
     <script>
     ReactDOM.render(
-        React.createElement(MdocForm, { click: function(){ alert('123') }}, 'Hello, worl1d!'),
+        React.createElement(MdocForm, {
+            model: [
+                {
+                    label: '姓名',
+                    key: 'name',
+                    type: 'text',
+                    maxLength: 10,
+                    default: '方运江',
+                },
+                {
+                    label: '电话',
+                    key: 'phone',
+                    type: 'text',
+                    maxLength: 11,
+                    rules: 'telephone',
+                },
+                {
+                    label: '联系方式',
+                    key: 'phone',
+                    type: 'text',
+                    maxLength: 11,
+                    rules: 'phone',
+                },
+                {
+                    label: '年龄',
+                    key: 'age',
+                    type: 'number',
+                    min: 10,
+                    step: 1,
+                    max: 100,
+                },
+                {
+                    label: '收入',
+                    key: 'income',
+                    type: 'number',
+                    min: 0,
+                    step: 1000,
+                    max: 1000000,
+                    rules: { reg: /^([1-9][0-9]+|[0-9])(.[0-9]{1,2})?$/, text: '请输入正数且最多保留2位小数' },
+                    required: false,
+                },
+            ],
+        }}),
         document.getElementById('app')
     );
     </script>
