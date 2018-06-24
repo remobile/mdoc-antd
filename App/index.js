@@ -2,9 +2,12 @@ import React from 'react';
 import antd_form_create from 'decorators/antd_form_create';
 import styles from './index.less';
 import _ from 'lodash';
+import moment from 'moment';
 import { Form, Button } from 'antd';
-import { PlainFormItem, TextFormItem, NumberFormItem, SelectFormItem, RadioFormItem, CheckFormItem, CheckGroupFormItem } from 'components';
+import { PlainFormItem, TextFormItem, NumberFormItem, SelectFormItem, RadioFormItem, CheckFormItem, CheckGroupFormItem, DateFormItem, DateRangeFormItem } from 'components';
 import { showError, getCheckRules } from 'utils';
+
+const DATE_FORMAT = 'YYYY-MM-DD';
 
 @antd_form_create
 export class MdocForm extends React.Component {
@@ -26,6 +29,14 @@ export class MdocForm extends React.Component {
                     if (_.isArray(item.options)) {
                         value[key] = value[key] * 1;
                     }
+                } else if (/^__date_range_/.test(k)) {
+                    const key = k.replace(/^__date_range_/, '');
+                    const item = _.find(model, o=>o.key===key);
+                    value[key] = v.map(o=>o.format(item.format||DATE_FORMAT));
+                } else if (/^__date_/.test(k)) {
+                    const key = k.replace(/^__date_/, '');
+                    const item = _.find(model, o=>o.key===key);
+                    value[key] = v.format(item.format||DATE_FORMAT);
                 }
             });
             value = _.omitBy(value, (v, k) => /^__.*/.test(k));
@@ -55,6 +66,10 @@ export class MdocForm extends React.Component {
             titles,
             reverse,
             group,
+            showToday,
+            showTime,
+            range,
+            format = DATE_FORMAT,
         } = item;
         const rules = getCheckRules(item.rules);
         switch (type) {
@@ -67,7 +82,17 @@ export class MdocForm extends React.Component {
             case 'radio':
                 return <RadioFormItem editing form={form} label={label} value={{ [key]: defaultValue }} titles={titles} reverse={reverse} />
             case 'check':
-                return group && <CheckGroupFormItem editing form={form} label={label} list={group} value={{ [key]: defaultValue }} /> || <CheckFormItem editing form={form} label={label} value={{ [key]: defaultValue }} />
+                return group
+                &&
+                <CheckGroupFormItem editing form={form} label={label} list={group} value={{ [key]: defaultValue }} />
+                ||
+                <CheckFormItem editing form={form} label={label} value={{ [key]: defaultValue }} />
+            case 'date':
+                return _.isArray(defaultValue)
+                &&
+                <DateRangeFormItem editing form={form} label={label} value={{ [`__date_range_${key}`]: defaultValue.map(o=>moment(o)) }} showToday={showToday} showTime={showTime} format={format} range={range && range.map(o=>moment(o))} />
+                ||
+                <DateFormItem editing form={form} label={label} value={{ [`__date_${key}`]: moment(defaultValue) }} showToday={showToday} showTime={showTime}  format={format} range={range && range.map(o=>moment(o))} />
             default:
                 return <PlainFormItem label={label} value={defaultValue} unit={unit} />;
         }
