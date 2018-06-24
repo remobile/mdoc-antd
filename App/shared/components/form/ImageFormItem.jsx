@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Icon, Upload } from 'antd';
 import _ from 'lodash';
+import styles from './index.less';
 import { formatFileSize, getFormItemLayout } from './config';
 import { showError } from '../../utils/confirm';
 const FormItem = Form.Item;
@@ -15,6 +16,8 @@ const uploadProps = {
 export default class ImageFormItem extends React.Component {
     static defaultProps = {
         maxSize: 500 * 1024, // 500K
+        width: 300,
+        height: 200,
     };
     state = {
         fileList: [],
@@ -74,7 +77,7 @@ export default class ImageFormItem extends React.Component {
         return true;
     }
     render () {
-        const { form, label, value, layout, editing, required = true, classNames = [] } = this.props;
+        const { form, label, value, layout, editing, width, height, required = true } = this.props;
         const { file, fileList } = this.state;
         const key = _.keys(value)[0];
         const url = value[key];
@@ -86,18 +89,18 @@ export default class ImageFormItem extends React.Component {
                 {editing && form.getFieldDecorator(key, { initialValue: url, rules:[{ required, message: `请选择${label}` }] })(<span />)}
                 {
                     editing &&
-                    <div className={classNames[0]}>
+                    <div className={styles.imageContainer} style={{width: width+6, height: height+6}}>
                         <Dragger {...uploadProps} showUploadList={false} fileList={fileList} accept='.jpg,.png' beforeUpload={::this.beforeUpload} onChange={::this.handleChange}>
                             {
                                 file.base64Code || file.url ?
-                                    <img src={file.url || file.base64Code} className={classNames[1]} />
+                                    <img src={file.url || file.base64Code} style={{width, height}} />
                                 :
                                     <Icon type='plus' />
                             }
                         </Dragger>
                     </div>
                     ||
-                    <img src={url} className={classNames[0]} />
+                    <img src={url} style={{width, height}} />
                 }
             </FormItem>
         );

@@ -4,7 +4,7 @@ import styles from './index.less';
 import _ from 'lodash';
 import moment from 'moment';
 import { Form, Button } from 'antd';
-import { PlainFormItem, TextFormItem, NumberFormItem, SelectFormItem, RadioFormItem, CheckFormItem, CheckGroupFormItem, DateFormItem, DateRangeFormItem, StarFormItem } from 'components';
+import { PlainFormItem, TextFormItem, NumberFormItem, SelectFormItem, RadioFormItem, CheckFormItem, CheckGroupFormItem, DateFormItem, DateRangeFormItem, StarFormItem, ImageFormItem } from 'components';
 import { showError, getCheckRules } from 'utils';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -71,6 +71,8 @@ export class MdocForm extends React.Component {
             range,
             format = DATE_FORMAT,
             count,
+            width,
+            height,
         } = item;
         const rules = getCheckRules(item.rules);
         switch (type) {
@@ -96,6 +98,8 @@ export class MdocForm extends React.Component {
                 <DateFormItem editing form={form} label={label} value={{ [`__date_${key}`]: moment(defaultValue) }} showToday={showToday} showTime={showTime}  format={format} range={range && range.map(o=>moment(o))} />
             case 'star':
                 return <StarFormItem editing form={form} label={label} value={{ [key]: defaultValue }} count={count} />;
+            case 'image':
+                return <ImageFormItem editing form={form} label={label} value={{ [key]: defaultValue }} width={width} height={height} />;
             default:
                 return <PlainFormItem label={label} value={defaultValue} unit={unit} />;
         }
