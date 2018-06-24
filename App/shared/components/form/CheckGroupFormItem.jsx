@@ -12,7 +12,7 @@ export default class CheckGroupFormItem extends React.Component {
         const key = _.keys(value)[0];
         return (
             <FormItem
-                {...getFormItemLayout(layout, formGroup, editing)}
+                {...getFormItemLayout(layout, formGroup)}
                 label={label}
                 >
                 {
@@ -21,7 +21,7 @@ export default class CheckGroupFormItem extends React.Component {
                     })(
                         <CheckboxGroup {...otherProps} className={styles.checkGroup}>
                             <Row>
-                                {list.map((o, k) => <Col key={k} span={8}><Checkbox disabled={!editing} value={o.value}>{o.label}</Checkbox></Col>)}
+                                {list.map((o, k) => <Col key={k} span={12}><Checkbox disabled={!editing} value={o.value}>{o.label}</Checkbox></Col>)}
                             </Row>
                         </CheckboxGroup>
                     )

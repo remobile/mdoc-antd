@@ -43,6 +43,19 @@
                     reverse: true,
                 },
                 {
+                    label: '农民',
+                    key: 'kindType',
+                    type: 'check',
+                    defaultValue: true,
+                },
+                {
+                    label: '职业',
+                    key: 'post',
+                    type: 'check',
+                    group: [ { value: 1, label: '农民' }, { value: 2, label: '工人' } ],
+                    defaultValue: [1],
+                },
+                {
                     label: '电话',
                     key: 'phone',
                     type: 'text',

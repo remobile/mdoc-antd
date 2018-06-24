@@ -3,7 +3,7 @@ import antd_form_create from 'decorators/antd_form_create';
 import styles from './index.less';
 import _ from 'lodash';
 import { Form, Button } from 'antd';
-import { PlainFormItem, TextFormItem, NumberFormItem, SelectFormItem, RadioFormItem } from 'components';
+import { PlainFormItem, TextFormItem, NumberFormItem, SelectFormItem, RadioFormItem, CheckFormItem, CheckGroupFormItem } from 'components';
 import { showError, getCheckRules } from 'utils';
 
 @antd_form_create
@@ -54,6 +54,7 @@ export class MdocForm extends React.Component {
             options,
             titles,
             reverse,
+            group,
         } = item;
         const rules = getCheckRules(item.rules);
         switch (type) {
@@ -65,6 +66,8 @@ export class MdocForm extends React.Component {
                 return <SelectFormItem editing form={form} label={label} value={{ [`__select_${key}`]: defaultValue }} options={options} unit={unit} />;
             case 'radio':
                 return <RadioFormItem editing form={form} label={label} value={{ [key]: defaultValue }} titles={titles} reverse={reverse} />
+            case 'check':
+                return group && <CheckGroupFormItem editing form={form} label={label} list={group} value={{ [key]: defaultValue }} /> || <CheckFormItem editing form={form} label={label} value={{ [key]: defaultValue }} />
             default:
                 return <PlainFormItem label={label} value={defaultValue} unit={unit} />;
         }
