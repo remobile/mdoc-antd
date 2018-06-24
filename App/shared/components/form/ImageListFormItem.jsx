@@ -25,6 +25,9 @@ function getCheckValidator (label, count) {
 export default class ImageListFormItem extends React.Component {
     static defaultProps = {
         maxSize: 500 * 1024, // 500K
+        width: 300,
+        height: 200,
+        count: 2,
     };
     constructor (props, context) {
         super(props, context);
@@ -81,7 +84,7 @@ export default class ImageListFormItem extends React.Component {
         return true;
     }
     render () {
-        const { form, label, layout, editing, count, value, required = true, classNames = [] } = this.props;
+        const { form, label, layout, editing, count, value, width, height, required = true } = this.props;
         const { previewVisible, previewImage, fileList } = this.state;
         const key = _.keys(value)[0];
         const uploadButton = (
@@ -97,7 +100,7 @@ export default class ImageListFormItem extends React.Component {
                 className={styles.imageList}
                 >
                 {editing && form.getFieldDecorator(key, { initialValue: value[key], rules:[ { required, message: `请选择${label}` }, { validator: getCheckValidator(label, count) } ] })(<span style={{ marginTop: 10 }} />)}
-                <div className={classNames[0]}>
+                <div tyle={{width: width*count+40, height: height}}>
                     <Upload
                         {...uploadProps}
                         accept='.jpg,.png'
@@ -107,7 +110,7 @@ export default class ImageListFormItem extends React.Component {
                         onPreview={::this.handlePreview}
                         onRemove={editing}
                         onChange={::this.handleChange}
-                        className={classNames[1]}
+                        style={{width, height}}
                         >
                         {(!editing || fileList.length >= count) ? null : uploadButton}
                     </Upload>
