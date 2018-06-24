@@ -149,6 +149,9 @@ function checkInt2PointNum (rule, str, callback) {
 }
 
 export function getCheckRules(rules) {
+    if (!rules) {
+        return undefined;
+    }
     if (typeof rules === 'object' && rules.reg instanceof RegExp) {
         return [ { validator: function(rule, str, callback) {
             if (!rules.reg.test(str)) {

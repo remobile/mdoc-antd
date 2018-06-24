@@ -12,8 +12,6 @@ export CheckFormItem from './form/CheckFormItem';
 export CheckGroupFormItem from './form/CheckGroupFormItem';
 export RadioFormItem from './form/RadioFormItem';
 export AddressFormItem from './form/AddressFormItem';
-export StartPointFormItem from './form/StartPointFormItem';
-export PriceFormItem from './form/PriceFormItem';
 export StarFormItem from './form/StarFormItem';
 export FileFormItem from './form/FileFormItem';
 

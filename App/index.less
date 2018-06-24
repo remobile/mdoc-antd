@@ -1,34 +1,16 @@
-.photo {
-    width: 200px;
-    height: 100px;
+.buttonContainer {
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding-left: 20%;
+    padding-right: 40%;
 }
-.roadmapModal {
-    top: 30px;
-    width: 1000px !important;
-    :global(.ant-modal-body) {
-        padding: 0;
-    }
-}
-.roadmapModalNoButton {
-    top: 30px;
-    width: 1000px !important;
-    :global(.ant-modal-body) {
-        padding: 0;
-    }
-    :global(.ant-modal-footer) {
-        :global(.ant-btn-primary) {
-            display: none;
-        }
-    }
-}
-.qrcodeModal {
-    top: 0px;
-    left: 0px;
-    width: 100% !important;
-    :global(.ant-modal-content) {
-        border-radius: 0 !important;
-    }
-    :global(.ant-modal-content) {
-        box-shadow: none;
+.button {
+    background-color: #D00D0F;
+    border: 0;
+    &:hover, &:focus {
+        background-color: #E85833;
     }
 }

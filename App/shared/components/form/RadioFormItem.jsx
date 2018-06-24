@@ -18,7 +18,7 @@ export default class RadioFormItem extends React.Component {
                     editing && form.getFieldDecorator(key, {
                         initialValue: value[key],
                     })(
-                        <RadioGroup {...otherProps} style={{ marginTop: 10 }}>
+                        <RadioGroup {...otherProps}>
                             <Radio value={!reverse}>{titles ? titles[0] : '是'}</Radio>
                             <Radio value={!!reverse}>{titles ? titles[1] : '否'}</Radio>
                             { addonAfter }
