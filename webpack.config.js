@@ -24,6 +24,7 @@ var commonLoaders = [
                 'transform-react-constant-elements',
                 'transform-react-inline-elements',
                 ["import", [{ "style": "css", "libraryName": "antd" }]],
+                'lodash',
             ]
         }
     },

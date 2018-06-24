@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Rate } from 'antd';
 import styles from './index.less';
+import _ from 'lodash';
 import { getFormItemLayout, getDefaultRules } from './config';
 
 const FormItem = Form.Item;
