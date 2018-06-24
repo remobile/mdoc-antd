@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { Form, Cascader } from 'antd';
 import styles from './index.less';
 import { getFormItemLayout, getDefaultRules } from './config';
+import { post } from 'utils';
 const FormItem = Form.Item;
 
 function getCheckValidator (label, options, needWhole) {
@@ -28,6 +29,9 @@ function getCheckValidator (label, options, needWhole) {
 }
 
 function getRegionAddress (parentCode, type = 0, callback) {
+    post('/api/getRegionAddress', { parentCode, type }).then((ret)=>{
+        callback(ret.success ? ret.context.addressList : []);
+    });
 }
 
 export default class AddressFormItem extends React.Component {

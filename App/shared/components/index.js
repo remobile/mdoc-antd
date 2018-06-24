@@ -7,7 +7,6 @@ export ImageFormItem from './form/ImageFormItem';
 export ImageListFormItem from './form/ImageListFormItem';
 export DateFormItem from './form/DateFormItem';
 export DateRangeFormItem from './form/DateRangeFormItem';
-export SizeFormItem from './form/SizeFormItem';
 export CheckFormItem from './form/CheckFormItem';
 export CheckGroupFormItem from './form/CheckGroupFormItem';
 export RadioFormItem from './form/RadioFormItem';
