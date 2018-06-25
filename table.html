@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <link rel="stylesheet" type="text/css" href="./build/mdoc-form.css">
+    <script src="./thirdparty/react.min.js"></script>
+    <script src="./thirdparty/react-dom.min.js"></script>
+    <script src="./build/mdoc-form.js"></script>
+</head>
+<body>
+    <div id="app" style="width:600px;margin-top:100px;margin-left:200px;"></div>
+    <script>
+    ReactDOM.render(
+        React.createElement(MdocForm, {
+            url: '/api/admin/test',
+            model: [
+                {
+                    label: '状态',
+                    defaultValue: '进行中',
+                },
+                // {
+                //     label: '地址',
+                //     key: 'address',
+                //     type: 'address',
+                //     defaultValue: ['贵州'],
+                //     hasLastCode: true,
+                // },
+                // {
+                //     label: '图片',
+                //     key: 'image',
+                //     type: 'image',
+                //     defaultValue: '',
+                //     width: 300,
+                //     height: 200,
+                // },
+                // {
+                //     label: '图片',
+                //     key: 'imageList',
+                //     type: 'imageList',
+                //     defaultValue: '',
+                //     width: 100,
+                //     height: 80,
+                //     count: 2,
+                // },
+                {
+                    label: '星级',
+                    key: 'starLevlel',
+                    type: 'star',
+                    defaultValue: 1,
+                    count: 6,
+                },
+                {
+                    label: '姓名',
+                    key: 'name',
+                    type: 'text',
+                    maxLength: 10,
+                    defaultValue: '方运江',
+                },
+                {
+                    label: '职位',
+                    key: 'bank',
+                    type: 'select',
+                    options: { 0: '学生', 1: '老师', 2: '家长' },
+                    // options: [ '学生', '老师', '家长' ],
+                    defaultValue: 0,
+
+                },
+                {
+                    label: '出生日期',
+                    key: 'birthday',
+                    type: 'date',
+                    range: ['2016-01-07', '2016-01-30'],
+                    defaultValue: '2016-01-09',
+                    showTime: true,
+                    format: 'YYYY-MM-DD HH:mm:ss',
+                },
+                {
+                    label: '活动时间',
+                    key: 'time',
+                    type: 'date',
+                    range: ['2016-01-07', '2016-01-30'],
+                    defaultValue: ['2016-01-09', '2016-01-10'],
+                    showTime: true,
+                    format: 'YYYY-MM-DD HH:mm:ss',
+                },
+                {
+                    label: '付款方式',
+                    key: 'payType',
+                    type: 'radio',
+                    titles: ['现付', '到付'],
+                    defaultValue: true,
+                    reverse: true,
+                    relate: [
+                        { key: 'post', affect: 'visible', calc: o=>o },
+                        { key: 'phone', affect: 'defaultValue', calc: o=>o ? 'fang' : 'yun' }
+                    ],
+                },
+                {
+                    label: '农民',
+                    key: 'kindType',
+                    type: 'check',
+                    defaultValue: true,
+                },
+                {
+                    label: '职业',
+                    key: 'post',
+                    type: 'check',
+                    group: [ { value: 1, label: '农民' }, { value: 2, label: '工人' } ],
+                    defaultValue: [1],
+                },
+                {
+                    label: '电话',
+                    key: 'phone',
+                    type: 'text',
+                    maxLength: 11,
+                    rules: 'telephone',
+                    defaultValue: '18085192480',
+                },
+                {
+                    label: '年龄',
+                    key: 'age',
+                    type: 'number',
+                    min: 10,
+                    step: 1,
+                    max: 100,
+                    defaultValue: 23,
+                },
+                {
+                    label: '收入',
+                    key: 'income',
+                    type: 'number',
+                    min: 0,
+                    step: 1000,
+                    max: 1000000,
+                    rules: { reg: /^([1-9][0-9]+|[0-9])(.[0-9]{1,2})?$/, text: '请输入正数且最多保留2位小数' },
+                    required: false,
+                    precision: 2,
+                    defaultValue: 1000,
+                },
+            ],
+        }),
+        document.getElementById('app')
+    );
+    </script>
+</body>
+</html>

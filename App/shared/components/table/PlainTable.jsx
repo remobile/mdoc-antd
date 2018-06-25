@@ -7,19 +7,32 @@ import _ from 'lodash';
 
 export default class PlainTable extends React.Component {
     static defaultProps = {
-        className: styles.container,
-        tableIndex: '',
-        totalTableCount: 1,
+        className: styles.tableContainer,
+        pageSize: 30,
     };
     state = {
         current: this.props['lastCurrent' + this.props.tableIndex] || 1,
     };
+    componentDidMount() {
+        const { url, pageSize, keyword } = this.props;
+        post(url, {
+            pageNo: 0,
+            pageSize,
+            keyword,
+        }).then((ret)=>{
+            if (!ret.success) {
+                showError(ret.msg);
+            } else {
+                showSuccess('提交成功');
+            }
+        });
+    }
     resetPageNo () {
         this.setState({ current: 1 });
     }
     onRowClick (record, index, event) {
         if (event.target.className !== 'ant-table-selection-column' && event.target.className !== '__filter_click') {
-            const { relate, onRowClick, tableIndex, totalTableCount } = this.props;
+            const { onRowClick, tableIndex, totalTableCount } = this.props;
             const { current } = this.state;
             if (onRowClick) {
                 const options = { ['lastSelectIndex' + tableIndex]: index, ['lastCurrent' + tableIndex]: current };
@@ -31,7 +44,6 @@ export default class PlainTable extends React.Component {
                         }
                     }
                 }
-                relate.setKeepData(options);
                 onRowClick(record, index, event);
             }
         }

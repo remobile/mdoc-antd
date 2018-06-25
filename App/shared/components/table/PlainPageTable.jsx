@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 export default class PlainTable extends React.Component {
     static defaultProps = {
-        className: styles.container,
+        className: styles.tableContainer,
         tableIndex: '',
         totalTableCount: 1,
     };
@@ -28,7 +28,7 @@ export default class PlainTable extends React.Component {
     }
     onRowClick (record, index, event) {
         if (event.target.className !== 'ant-table-selection-column' && event.target.className !== '__filter_click') {
-            const { relate, onRowClick, tableIndex, totalTableCount } = this.props;
+            const { onRowClick, tableIndex, totalTableCount } = this.props;
             const { current } = this.state;
             if (onRowClick) {
                 const options = { ['lastSelectIndex' + tableIndex]: index, ['lastCurrent' + tableIndex]: current };
@@ -40,7 +40,6 @@ export default class PlainTable extends React.Component {
                         }
                     }
                 }
-                relate.setKeepData(options);
                 onRowClick(record, index, event);
             }
         }
@@ -58,13 +57,7 @@ export default class PlainTable extends React.Component {
         return current === lastCurrent && lastSelectIndex === index ? 'last_selected' : '';
     }
     loadMore (key) {
-        const { relate, loadMore } = this.props;
-        const page = relate.getPageAttribute(key);
-        if (!page) {
-            loadMore(1, () => { this.loadingMore = true; });
-        } else if (page.hasMore) {
-            loadMore(page.pageNo + 1, () => { this.loadingMore = true; });
-        }
+        
     }
     render () {
         const { current } = this.state;

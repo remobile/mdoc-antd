@@ -8,7 +8,7 @@ const TabPane = Tabs.TabPane;
 
 export default class PlainTable extends React.Component {
     static defaultProps = {
-        className: styles.container,
+        className: styles.tableContainer,
         listName: 'list',
     };
     state = {

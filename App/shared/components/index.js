@@ -15,6 +15,7 @@ export StarFormItem from './form/StarFormItem';
 export FileFormItem from './form/FileFormItem';
 
 // table
+export TableContainer from './table/TableContainer';
 export PlainTable from './table/PlainTable';
 export PlainPageTable from './table/PlainPageTable';
 export TabsTable from './table/TabsTable';

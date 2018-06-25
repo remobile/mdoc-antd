@@ -1,5 +1,44 @@
 .container {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #FFFFFF;
+}
+.tableTitle {
+    font-size: 18px;
+}
+.searchContainer {
+    display: flex;
+    background-color: #EAE9EC;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+    min-height: 80px;
+    border-bottom: 1px solid #C4C4C4;
+    position: relative;
+}
+.search {
+    :global(.ant-input-affix-wrapper) {
+        height: 40px;
+        border-radius: 20px !important;
+        width: 300px !important;
+    }
+    :global(.ant-input) {
+        height: 40px;
+        padding: 4px 20px;
+        border-radius: 20px;
+    }
+}
+.buttonsContainer {
+    position: absolute;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    right: 20;
+    z-index: 1000;
+}
+.tableContainer {
+    flex: 1;
     overflow: visible;
 }
 .table {
