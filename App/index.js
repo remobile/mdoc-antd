@@ -12,6 +12,9 @@ const addressList=[{"isLeaf":true,"id":1,"code":11,"parentCode":0,"name":"北京
 
 @antd_form_create
 export class MdocForm extends React.Component {
+    state = {
+        model: this.props.model,
+    };
     componentDidMount () {
         notification.config({
             placement: 'bottomLeft',
@@ -21,7 +24,8 @@ export class MdocForm extends React.Component {
     }
     handleSubmit (e) {
         e.preventDefault();
-        const { form, model, url } = this.props;
+        const { form, url } = this.props;
+        const { model } = this.state;
         form.validateFields((errors, value) => {
             if (errors) {
                 _.mapValues(errors, (item) => {
@@ -55,6 +59,8 @@ export class MdocForm extends React.Component {
                 }
             });
             value = _.omitBy(value, (v, k) => /^__.*/.test(k));
+            console.log(value);
+            return;
 
             post(url, value).then((ret)=>{
                 if (!ret.success) {
@@ -69,9 +75,29 @@ export class MdocForm extends React.Component {
         e.preventDefault();
         this.props.form.resetFields();
     }
+    onRadioChange(key, relate, e) {
+        const { model } = this.state;
+        let _model;
+        relate.forEach(o=>{
+            const item = _.find(model, m=>m.key===o.key);
+            if (o.affect === 'visible') {
+                item[o.affect] = o.calc(e.target.value);
+            } else {
+                !_model && ( _model = _.cloneDeep(model) );
+                const _item = _.find(_model, m=>m.key===o.key);
+                item['visible'] = false;
+                _item[o.affect] = o.calc(e.target.value);
+            }
+        });
+        this.setState({ model }, ()=>{
+            _model && this.setState({ model: _model });
+        });
+    }
     renderFormItem(item) {
         const { form } = this.props;
         const {
+            visible = true,
+            relate,
             type,
             label,
             key,
@@ -95,6 +121,9 @@ export class MdocForm extends React.Component {
             width,
             height,
         } = item;
+        if (!visible) {
+            return null;
+        }
         const rules = getCheckRules(item.rules);
         switch (type) {
             case 'text': {
@@ -107,7 +136,7 @@ export class MdocForm extends React.Component {
                 return <SelectFormItem editing form={form} label={label} value={{ [`__select_${key}`]: defaultValue }} options={options} unit={unit} />;
             }
             case 'radio': {
-                return <RadioFormItem editing form={form} label={label} value={{ [key]: defaultValue }} titles={titles} reverse={reverse} />;
+                return <RadioFormItem editing form={form} label={label} value={{ [key]: defaultValue }} titles={titles} reverse={reverse} onChange={relate && this.onRadioChange.bind(this, key, relate)}/>;
             }
             case 'check': {
                 return group
@@ -142,7 +171,7 @@ export class MdocForm extends React.Component {
 
     }
     render () {
-        const { model } = this.props;
+        const { model } = this.state;
         return (
             <Form>
                 { model.map(o=>::this.renderFormItem(o)) }

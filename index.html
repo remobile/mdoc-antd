@@ -19,13 +19,13 @@
                     label: '状态',
                     defaultValue: '进行中',
                 },
-                {
-                    label: '地址',
-                    key: 'address',
-                    type: 'address',
-                    defaultValue: ['贵州'],
-                    hasLastCode: true,
-                },
+                // {
+                //     label: '地址',
+                //     key: 'address',
+                //     type: 'address',
+                //     defaultValue: ['贵州'],
+                //     hasLastCode: true,
+                // },
                 // {
                 //     label: '图片',
                 //     key: 'image',
@@ -91,6 +91,10 @@
                     titles: ['现付', '到付'],
                     defaultValue: true,
                     reverse: true,
+                    relate: [
+                        { key: 'post', affect: 'visible', calc: o=>o },
+                        { key: 'phone', affect: 'defaultValue', calc: o=>o ? 'fang' : 'yun' }
+                    ],
                 },
                 {
                     label: '农民',
