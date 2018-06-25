@@ -14,10 +14,6 @@ export AddressFormItem from './form/AddressFormItem';
 export StarFormItem from './form/StarFormItem';
 export FileFormItem from './form/FileFormItem';
 
-// title
-export TableContainer from './layout/TableContainer';
-export DetailContainer from './layout/DetailContainer';
-
 // table
 export PlainTable from './table/PlainTable';
 export PlainPageTable from './table/PlainPageTable';
