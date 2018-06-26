@@ -2,105 +2,139 @@ import React from 'react';
 import { Table, Tabs, Button } from 'antd';
 import _ from 'lodash';
 import cn from 'classnames';
+import { showError, post } from 'utils';
 import styles from './index.less';
 import { fixColumns } from './config';
 const TabPane = Tabs.TabPane;
 
-export default class PlainTable extends React.Component {
+export default class TabsPageTable extends React.Component {
     static defaultProps = {
-        className: styles.tableContainer,
-        listName: 'list',
+        className: styles.container,
     };
     state = {
-        currents: Object.assign(_.mapValues(this.props.tables, () => 1), this.props.lastCurrents),
-        activeType: this.props.activeType || this.props.lastActiveType || _.keys(this.props.tables)[0],
+        loading: false,
+        pageSize: this.props.pageSize,
+        activeType: _.keys(this.props.tables)[0],
+        data: _.mapValues(this.props.tables, o=>({list: [], current: 1, hasMore: true, maxCount: 0})),
     };
-    componentWillReceiveProps (nextProps) {
-        const { currents, activeType } = this.state;
-        const { tables, listName, pageSize } = this.props;
-        if (this.loadingMore) {
-            this.loadingMore = false;
-            const list = nextProps.data[activeType];
-            const length = _.isArray(list) ? list.length : (list[tables[activeType].listName || listName] || []).length;
-            currents[activeType] = Math.floor((length - 1) / pageSize) + 1;
-            this.setState({ currents });
+    componentDidMount() {
+        this.getPageList('', 0);
+    }
+    refresh() {
+        this.setState({
+            data: _.mapValues(this.props.tables, o=>({list: [], current: 1, hasMore: true, maxCount: 0})),
+        }, ()=>{
+            this.getPageList('', 0);
+        });
+    }
+    needLoadPage (list, pageNo, pageSize) {
+        const detectList = _.slice(list, pageNo * pageSize, (pageNo + 1) * pageSize);
+        let needLoad = true;
+        if (detectList.length === pageSize) {
+            needLoad = !_.every(detectList);
         }
+        return needLoad;
+    }
+    getPageList(type, pageNo) {
+        let { data, pageSize } = this.state;
+        const { url, params, listName, tables } = this.props;
+        const types = _.keys(tables);
+
+        if (type) {
+            if (!data[type].hasMore) {
+                return;
+            }
+            if (!this.needLoadPage(data[type].list, pageNo, pageSize)) {
+                return;
+            }
+        }
+        this.setState({loading: true}, ()=>{
+            post(url, {
+                type,
+                pageNo,
+                pageSize,
+                ...params,
+            }).then((ret)=>{
+                if (!ret.success) {
+                    this.setState({loading: false});
+                    return showError(ret.msg);
+                }
+                this.setState({
+                    data: {
+                        ...data,
+                        ..._.mapValues(ret.context, (v, k)=>{
+                            const item = data[k];
+                            let { list, hasMore } = item;
+                            const _list = _.get(v, listName) || [];
+                            const _listLen = _list.length;
+                            if (_listLen < pageSize) {
+                                hasMore = false;
+                            }
+                            list.length < pageNo*pageSize && (list.length = pageNo*pageSize);
+                            list.splice(pageNo*pageSize, _listLen, ..._list);
+                            return { ...item, list, hasMore, current: pageNo+1, maxCount: list.length };
+                        }),
+                    },
+                    loading: false,
+                });
+            });
+        });
     }
     onRowClick (record, index, event) {
         if (event.target.className !== 'ant-table-selection-column' && event.target.className !== '__filter_click') {
-            const { relate, onRowClick } = this.props;
-            const { currents, activeType } = this.state;
-            if (onRowClick) {
-                relate.setKeepData({ lastSelectIndex: index, lastCurrents: currents, lastActiveType: activeType });
-                onRowClick(record, index, activeType, event);
-            }
+            const { onRowClick } = this.props;
+            const { activeType } = this.state;
+            onRowClick && onRowClick(record, index, activeType, event);
         }
     }
     onRow (record, index) {
-        return {
-            onClick: this.onRowClick.bind(this, record, index),
-        };
-    }
-    rowClassName (type, record, index) {
-        const { lastActiveType, lastCurrents = {}, lastSelectIndex } = this.props;
-        const { currents } = this.state;
-        return lastActiveType === type && currents[type] === lastCurrents[type] && lastSelectIndex === index ? 'last_selected' : '';
+        return { onClick: this.onRowClick.bind(this, record, index) };
     }
     onTabsChange (key) {
-        const { onTabsChange } = this.props;
         this.setState({ activeType: key });
-        onTabsChange && onTabsChange(key);
     }
-    loadMore (type, key) {
-        const { relate, loadMore } = this.props;
-        const page = relate.getPageAttribute(key);
-        if (!page) {
-            loadMore(type, 1, () => { this.loadingMore = true; });
-        } else if (page.hasMore) {
-            loadMore(type, page.pageNo + 1, () => { this.loadingMore = true; });
-        }
+    loadMore (type) {
+        const { data, pageSize } = this.state;
+        this.getPageList(type, Math.floor((data[type].maxCount-1)/pageSize)+1);
     }
     render () {
-        const { currents, activeType } = this.state;
+        const { pageSize, activeType, loading } = this.state;
         const {
             tables,
-            data,
             columns,
-            pageSize,
-            listName,
-            loading,
-            loadingMore,
-            rowSelection,
             noFooter,
+            pageSizeOptions,
             className,
             scrollX,
             rowKey,
-            /* eslint-disable */
-            onRowClick,
-            /* eslint-enable */
-            relate,
-            ...otherProps
         } = this.props;
         const pagination = (total, type) => ({
             total,
-            showSizeChanger: false,
             pageSize,
-            current: currents[type],
+            current: this.state.data[type].current,
+            showSizeChanger: !!pageSizeOptions,
+            pageSizeOptions,
+            onShowSizeChange: (current, pageSize) => {
+                this.state.data[type].current = current;
+                this.setState({ data: this.state.data, pageSize }, ()=>{
+                    this.getPageList('', current - 1);
+                });
+            },
             itemRender: (current, elementType, originalElement) => {
                 if (elementType === 'prev') {
                     return null;
                 }
                 if (elementType === 'next') {
-                    const key = tables[type].listName || (type + '.' + listName);
-                    const page = relate.getPageAttribute(key);
-                    const hasMore = !page ? total === pageSize : page.hasMore;
-                    return hasMore ? <Button style={{ marginRight: 20 }} onClick={this.loadMore.bind(this, type, key)}>更多</Button> : null;
+                    const hasMore = this.state.data[type].hasMore;
+                    return hasMore ? <Button style={{ marginRight: 20 }} onClick={this.loadMore.bind(this, type)}>更多</Button> : null;
                 }
                 return originalElement;
             },
             onChange: (current) => {
-                currents[type] = current;
-                this.setState({ currents });
+                this.state.data[type].current = current;
+                this.setState({ data: this.state.data }, ()=>{
+                    this.getPageList(type, current - 1);
+                });
             },
         });
         return (
@@ -108,22 +142,18 @@ export default class PlainTable extends React.Component {
                 <Tabs type='card' onChange={::this.onTabsChange} activeKey={activeType}>
                     {
                         _.map(tables, (item, type) => {
-                            const list = data[type] || [];
+                            const list = this.state.data[type].list;
                             const xscroll = item.scrollX || scrollX;
-                            const dataSource = _.isArray(list) ? list : list[item.listName || listName] || [];
                             return (
                                 <TabPane tab={item.label} key={type}>
                                     <Table
                                         bordered
                                         rowKey={(record, key) => rowKey ? rowKey(record, key) : _.isNil(record.id) ? key : record.id}
-                                        loading={loading || loadingMore}
+                                        loading={loading}
                                         columns={fixColumns(item.columns || columns)}
-                                        dataSource={dataSource}
-                                        rowSelection={item.rowSelection || rowSelection}
-                                        pagination={noFooter !== true && item.noFooter !== true && pagination(dataSource.length, type)}
-                                        {...otherProps}
+                                        dataSource={list}
+                                        pagination={noFooter !== true && item.noFooter !== true && pagination(list.length, type)}
                                         {...(xscroll ? { scroll: { x: xscroll } } : {})}
-                                        rowClassName={this.rowClassName.bind(this, type)}
                                         onRow={::this.onRow} />
                                 </TabPane>
                             );
