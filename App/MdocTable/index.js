@@ -31,6 +31,7 @@ export default class MdocTable  extends React.Component {
                     listName={listName}
                     params={params}
                     pageSize={pageSize}
+                    tables={tables}
                     columns={columns}
                     pageSizeOptions={pageSizeOptions}
                     noFooter={noFooter}

@@ -11,37 +11,34 @@
 <body>
     <div id="app" style="width:1000px;margin-top:100px;margin-left:50px;"></div>
     <script>
-    ReactDOM.render(
-        React.createElement(MdocTable, {
-            hasTotalCount: true,
-            pageSize: 2,
-            url: '/api/shop/getBranchShopList',
-            listName: 'branchShopList',
-            columns: [{
-                title: '分店名称',
-                dataIndex: 'name',
-            }, {
-                title: '分层比例',
-                dataIndex: 'profitRate',
-                width: 100,
-                render: (data = {}) => `${data * 100}%`,
-            }, {
-                title: '分店董事长',
-                dataIndex: 'chairMan',
-                render: (data = {}) => `${data.name}(${data.phone})`,
-            }, {
-                title: '所在地',
-                dataIndex: 'addressRegion',
-            }, {
-                title: '地址',
-                dataIndex: 'address',
-            }, {
-                title: '联系电话',
-                dataIndex: 'phoneList',
-            }],
-        }),
-        document.getElementById('app')
-    );
+    renderTable('app', {
+        hasTotalCount: true,
+        pageSize: 2,
+        url: '/api/shop/getBranchShopList',
+        listName: 'branchShopList',
+        columns: [{
+            title: '分店名称',
+            dataIndex: 'name',
+        }, {
+            title: '分层比例',
+            dataIndex: 'profitRate',
+            width: 100,
+            render: (data = {}) => `${data * 100}%`,
+        }, {
+            title: '分店董事长',
+            dataIndex: 'chairMan',
+            render: (data = {}) => `${data.name}(${data.phone})`,
+        }, {
+            title: '所在地',
+            dataIndex: 'addressRegion',
+        }, {
+            title: '地址',
+            dataIndex: 'address',
+        }, {
+            title: '联系电话',
+            dataIndex: 'phoneList',
+        }],
+    });
     </script>
 </body>
 </html>

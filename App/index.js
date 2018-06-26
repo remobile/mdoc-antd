@@ -1,2 +1,19 @@
-export MdocForm from './MdocForm';
-export MdocTable from './MdocTable';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import MdocForm from './MdocForm';
+import MdocTable from './MdocTable';
+
+
+export function renderForm(el, options) {
+    ReactDOM.render(
+        React.createElement(MdocForm, options),
+        typeof el === 'string' ? document.getElementById(el) : el
+    );
+}
+
+export function renderTable(el, options) {
+    ReactDOM.render(
+        React.createElement(MdocTable, options),
+        typeof el === 'string' ? document.getElementById(el) : el
+    );
+}

@@ -227,25 +227,22 @@
             dataIndex: 'phone',
         },
     ];
-    ReactDOM.render(
-        React.createElement(MdocTable, {
-            hasTotalCount: false,
-            pageSize: 2,
-            url: '/api/shop/getInfoRecords',
-            params: {userId: '5b305df67557cb46b5d1a559'},
-            tables: {
-                shopmember: { label: '总部员工', columns: shopmemberColumns },
-                shipper: { label: '物流公司抢驻', columns: shipperColumns, scrollX:'120%' },
-                receivepartment: { label: '收货部', columns: receivepartmentColumns },
-                carrypartment: { label: '搬运部', columns: carrypartmentColumns },
-                shop: { label: '分店加盟', columns: shopColumns, scrollX:'150%' },
-                agent: { label: '小型收货点加盟', columns: agentColumns, scrollX:'150%' },
-                media: { label: '新闻媒体预约', columns: mediaColumns },
-                landcargo: { label: '我要落货', columns: landcargoColumns },
-            },
-        }),
-        document.getElementById('app')
-    );
+    renderTable('app', {
+        hasTotalCount: false,
+        pageSize: 2,
+        url: '/api/shop/getInfoRecords',
+        params: {userId: '5b305df67557cb46b5d1a559'},
+        tables: {
+            shopmember: { label: '总部员工', columns: shopmemberColumns },
+            shipper: { label: '物流公司抢驻', columns: shipperColumns, scrollX:'120%' },
+            receivepartment: { label: '收货部', columns: receivepartmentColumns },
+            carrypartment: { label: '搬运部', columns: carrypartmentColumns },
+            shop: { label: '分店加盟', columns: shopColumns, scrollX:'150%' },
+            agent: { label: '小型收货点加盟', columns: agentColumns, scrollX:'150%' },
+            media: { label: '新闻媒体预约', columns: mediaColumns },
+            landcargo: { label: '我要落货', columns: landcargoColumns },
+        },
+    });
     </script>
 </body>
 </html>
