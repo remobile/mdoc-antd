@@ -3,7 +3,7 @@ import { TableContainer, PlainTable, PlainPageTable, TabsTable, TabsPageTable } 
 
 export default class MdocTable  extends React.Component {
     static defaultProps = {
-        pageSize: 1,
+        pageSize: 30,
         listName: 'list',
         params: {},
     };
@@ -19,12 +19,13 @@ export default class MdocTable  extends React.Component {
     }
     render () {
         const { params } = this.state;
-        const { url, listName, pageSize, columns, onRowClick, pageSizeOptions } = this.props;
+        const { hasTotalCount, tables, url, listName, pageSize, columns, onRowClick, pageSizeOptions, noFooter } = this.props;
+        const Component = tables ? (hasTotalCount ? TabsTable : TabsPageTable) : (hasTotalCount ? PlainTable : PlainPageTable);
         return (
             <TableContainer
                 onSearch={::this.onSearch}
                 refresh={::this.refresh}>
-                <PlainPageTable
+                <Component
                     ref={(ref) => { this.table = ref; }}
                     url={url}
                     listName={listName}
@@ -32,6 +33,7 @@ export default class MdocTable  extends React.Component {
                     pageSize={pageSize}
                     columns={columns}
                     pageSizeOptions={pageSizeOptions}
+                    noFooter={noFooter}
                     onRowClick={onRowClick} />
             </TableContainer>
         );

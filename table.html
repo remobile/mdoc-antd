@@ -13,6 +13,8 @@
     <script>
     ReactDOM.render(
         React.createElement(MdocTable, {
+            hasTotalCount: true,
+            pageSize: 2,
             url: '/api/shop/getBranchShopList',
             listName: 'branchShopList',
             columns: [{

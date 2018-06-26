@@ -36,15 +36,15 @@ export default class TabsPageTable extends React.Component {
         return needLoad;
     }
     getPageList(type, pageNo) {
-        let { data, pageSize } = this.state;
+        let { pageSize } = this.state;
         const { url, params, listName, tables } = this.props;
         const types = _.keys(tables);
 
         if (type) {
-            if (!data[type].hasMore) {
+            if (!this.state.data[type].hasMore) {
                 return;
             }
-            if (!this.needLoadPage(data[type].list, pageNo, pageSize)) {
+            if (!this.needLoadPage(this.state.data[type].list, pageNo, pageSize)) {
                 return;
             }
         }
@@ -59,11 +59,13 @@ export default class TabsPageTable extends React.Component {
                     this.setState({loading: false});
                     return showError(ret.msg);
                 }
+                console.log("=====", this.state.data);
                 this.setState({
                     data: {
-                        ...data,
+                        ...this.state.data,
                         ..._.mapValues(ret.context, (v, k)=>{
-                            const item = data[k];
+                            console.log("====", v, k, this.state.data[k]);
+                            const item = this.state.data[k];
                             let { list, hasMore } = item;
                             const _list = _.get(v, listName) || [];
                             const _listLen = _list.length;

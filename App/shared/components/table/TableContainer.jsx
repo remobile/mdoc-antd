@@ -7,15 +7,12 @@ export default class TableContainer extends React.Component {
     static defaultProps = {
         placeholder: '输入关键字查找',
     };
-    handleGoBack () {
-        this.props.history.goBack();
-    }
     render () {
-        const { loading, placeholder, title, onSearch, history, refresh, children } = this.props;
+        const { placeholder, title, onSearch, refresh, children } = this.props;
         return (
             <div className={styles.container}>
                 {
-                    (!!onSearch || !!title || !!history) &&
+                    (!!onSearch || !!title || !!refresh) &&
                     <div className={styles.searchContainer}>
                         {
                             !!onSearch &&
@@ -28,7 +25,7 @@ export default class TableContainer extends React.Component {
                             <div className={styles.tableTitle}>{title}</div>
                         }
                         <div className={styles.buttonsContainer}>
-                            { (!!refresh && !loading) && <Button style={{ marginLeft: 10 }} onClick={refresh}>刷新</Button> }
+                            { !!refresh && <Button style={{ marginLeft: 10 }} onClick={refresh}>刷新</Button> }
                         </div>
                     </div>
                 }
