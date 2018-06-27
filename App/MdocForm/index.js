@@ -75,7 +75,8 @@ export default class MdocForm extends React.Component {
         e.preventDefault();
         this.props.form.resetFields();
     }
-    onRadioChange(key, relate, e) {
+    onItemChange(key, relate, e) {
+        console.log("============", e.target.value);
         const { model } = this.state;
         let _model;
         relate.forEach(o=>{
@@ -127,30 +128,30 @@ export default class MdocForm extends React.Component {
         const rules = getCheckRules(item.rules);
         switch (type) {
             case 'text': {
-                return <TextFormItem editing form={form} label={label} value={{ [key]: defaultValue }} maxLength={maxLength} rules={rules} />;
+                return <TextFormItem editing form={form} label={label} value={{ [key]: defaultValue }} maxLength={maxLength} rules={rules}  onChange={relate && this.onItemChange.bind(this, key, relate)} />;
             }
             case 'number': {
-                return <NumberFormItem editing form={form} label={label} value={{ [key]: defaultValue }} min={min} step={step} max={max} maxLength={maxLength} rules={rules} precision={precision} unit={unit} />;
+                return <NumberFormItem editing form={form} label={label} value={{ [key]: defaultValue }} min={min} step={step} max={max} maxLength={maxLength} rules={rules} precision={precision} unit={unit}  onChange={relate && this.onItemChange.bind(this, key, relate)} />;
             }
             case 'select': {
-                return <SelectFormItem editing form={form} label={label} value={{ [`__select_${key}`]: defaultValue }} options={options} unit={unit} />;
+                return <SelectFormItem editing form={form} label={label} value={{ [`__select_${key}`]: defaultValue }} options={options} unit={unit} onChange={relate && this.onItemChange.bind(this, key, relate)} />;
             }
             case 'radio': {
-                return <RadioFormItem editing form={form} label={label} value={{ [key]: defaultValue }} titles={titles} reverse={reverse} onChange={relate && this.onRadioChange.bind(this, key, relate)}/>;
+                return <RadioFormItem editing form={form} label={label} value={{ [key]: defaultValue }} titles={titles} reverse={reverse} onChange={relate && this.onItemChange.bind(this, key, relate)}/>;
             }
             case 'check': {
                 return group
                 &&
-                <CheckGroupFormItem editing form={form} label={label} list={group} value={{ [key]: defaultValue }} />
+                <CheckGroupFormItem editing form={form} label={label} list={group} value={{ [key]: defaultValue }} onChange={relate && this.onItemChange.bind(this, key, relate)} />
                 ||
-                <CheckFormItem editing form={form} label={label} value={{ [key]: defaultValue }} />;
+                <CheckFormItem editing form={form} label={label} value={{ [key]: defaultValue }} onChange={relate && this.onItemChange.bind(this, key, relate)} />;
             }
             case 'date': {
                 return _.isArray(defaultValue)
                 &&
-                <DateRangeFormItem editing form={form} label={label} value={{ [`__date_range_${key}`]: defaultValue.map(o=>moment(o)) }} showToday={showToday} showTime={showTime} format={format} range={range && range.map(o=>moment(o))} />
+                <DateRangeFormItem editing form={form} label={label} value={{ [`__date_range_${key}`]: defaultValue.map(o=>moment(o)) }} showToday={showToday} showTime={showTime} format={format} range={range && range.map(o=>moment(o))} onChange={relate && this.onItemChange.bind(this, key, relate)} />
                 ||
-                <DateFormItem editing form={form} label={label} value={{ [`__date_${key}`]: moment(defaultValue) }} showToday={showToday} showTime={showTime}  format={format} range={range && range.map(o=>moment(o))} />;
+                <DateFormItem editing form={form} label={label} value={{ [`__date_${key}`]: moment(defaultValue) }} showToday={showToday} showTime={showTime}  format={format} range={range && range.map(o=>moment(o))} onChange={relate && this.onItemChange.bind(this, key, relate)} />;
             }
             case 'star': {
                 return <StarFormItem editing form={form} label={label} value={{ [key]: defaultValue }} count={count} />;

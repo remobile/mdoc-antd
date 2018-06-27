@@ -16,28 +16,6 @@ function checkMinNumber (rule, value, callback) {
 }
 
 export default class NumberFormItem extends React.Component {
-    componentWillReceiveProps (nextProps) {
-        if (this.innderUpdate) {
-            this.innderUpdate = false;
-            return;
-        }
-
-        const props = this.props;
-        if (props.onChange) {
-            const { value, editing } = nextProps;
-            if (!_.isEqual(value, props.value)) {
-                const key = _.keys(value)[0];
-                editing && props.form.setFieldsValue({ [key]: value[key] });
-            }
-        }
-    }
-    handleChange = (value) => {
-        const { onChange } = this.props;
-        if (onChange) {
-            this.innderUpdate = true;
-            onChange(value);
-        }
-    }
     render () {
         const { form, label, value, min, max, step, unit, editing, layout, rules, required = true, hasFeedback = true, formGroup, ...otherProps } = this.props;
         const key = _.keys(value)[0];
@@ -52,7 +30,7 @@ export default class NumberFormItem extends React.Component {
                         initialValue: value[key],
                         rules: getDefaultRules(label, required, rules || [ { validator: checkMinNumber } ]),
                     })(
-                        <InputNumber {...otherProps} min={min} max={max} step={step} onChange={::this.handleChange} />
+                        <InputNumber {...otherProps} min={min} max={max} step={step} />
                     ) || (
                         <span className={styles.value}>{value[key]}</span>
                     )
