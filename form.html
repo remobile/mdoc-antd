@@ -9,7 +9,7 @@
     <script src="./build/mdoc-form.js"></script>
 </head>
 <body>
-    <div id="app" style="width:600px;margin-top:100px;margin-left:200px;"></div>
+    <div id="app" style="width:800px;margin-top:100px;margin-left:200px;"></div>
     <script>
     renderForm('app', {
         url: '/api/admin/test',
@@ -55,6 +55,8 @@
                 type: 'text',
                 maxLength: 10,
                 defaultValue: '方运江',
+                watch: true,
+                watch: (v)=>console.log(v)
             },
             {
                 label: '职位',
@@ -90,7 +92,7 @@
                 titles: ['现付', '到付'],
                 defaultValue: true,
                 reverse: true,
-                relate: [
+                watch: [
                     { key: 'post', affect: 'visible', calc: o=>o },
                     { key: 'phone', affect: 'defaultValue', calc: o=>o ? 'fang' : 'yun' }
                 ],

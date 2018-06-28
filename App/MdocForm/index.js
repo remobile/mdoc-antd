@@ -75,30 +75,49 @@ export default class MdocForm extends React.Component {
         e.preventDefault();
         this.props.form.resetFields();
     }
-    onItemChange(key, relate, e) {
-        console.log("============", e.target.value);
+    onItemChange(type, key, watch, e) {
         const { model } = this.state;
-        let _model;
-        relate.forEach(o=>{
-            const item = _.find(model, m=>m.key===o.key);
-            if (o.affect === 'visible') {
-                item[o.affect] = o.calc(e.target.value);
-            } else {
-                !_model && ( _model = _.cloneDeep(model) );
-                const _item = _.find(_model, m=>m.key===o.key);
-                item['visible'] = false;
-                _item[o.affect] = o.calc(e.target.value);
+        let value = e;
+        if (['text', 'radio', 'check'].indexOf(type) > -1) {
+            value = e.target.value;
+        } else if (type === 'date') {
+            const item = _.find(model, m=>m.key===key);
+            value = e.format(item.format||DATE_FORMAT);
+        } else if (type === 'daterange') {
+            const item = _.find(model, m=>m.key===key);
+            value = e.map(o=>o.format(item.format||DATE_FORMAT));
+        } else if (type === 'select') {
+            const item = _.find(model, m=>m.key===key);
+            value = _.findKey(item.options, v => v === value);
+            if (_.isArray(item.options)) {
+                value = value * 1;
             }
-        });
-        this.setState({ model }, ()=>{
-            _model && this.setState({ model: _model });
-        });
+        }
+        if (typeof watch === 'function') {
+            watch(value);
+        } else {
+            let _model;
+            watch.forEach(o=>{
+                const item = _.find(model, m=>m.key===o.key);
+                if (o.affect === 'visible') {
+                    item[o.affect] = o.calc(value);
+                } else {
+                    !_model && ( _model = _.cloneDeep(model) );
+                    const _item = _.find(_model, m=>m.key===o.key);
+                    item['visible'] = false;
+                    _item[o.affect] = o.calc(value);
+                }
+            });
+            this.setState({ model }, ()=>{
+                _model && this.setState({ model: _model });
+            });
+        }
     }
     renderFormItem(item) {
         const { form } = this.props;
         const {
             visible = true,
-            relate,
+            watch,
             type,
             label,
             key,
@@ -106,7 +125,7 @@ export default class MdocForm extends React.Component {
             min,
             step,
             max,
-            required,
+            required = true,
             unit,
             precision = 0,
             defaultValue ='',
@@ -128,45 +147,45 @@ export default class MdocForm extends React.Component {
         const rules = getCheckRules(item.rules);
         switch (type) {
             case 'text': {
-                return <TextFormItem editing form={form} label={label} value={{ [key]: defaultValue }} maxLength={maxLength} rules={rules}  onChange={relate && this.onItemChange.bind(this, key, relate)} />;
+                return <TextFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} maxLength={maxLength} rules={rules}  onChange={watch && this.onItemChange.bind(this, 'text', key, watch)} />;
             }
             case 'number': {
-                return <NumberFormItem editing form={form} label={label} value={{ [key]: defaultValue }} min={min} step={step} max={max} maxLength={maxLength} rules={rules} precision={precision} unit={unit}  onChange={relate && this.onItemChange.bind(this, key, relate)} />;
+                return <NumberFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} min={min} step={step} max={max} maxLength={maxLength} rules={rules} precision={precision} unit={unit}  onChange={watch && this.onItemChange.bind(this, 'number', key, watch)} />;
             }
             case 'select': {
-                return <SelectFormItem editing form={form} label={label} value={{ [`__select_${key}`]: defaultValue }} options={options} unit={unit} onChange={relate && this.onItemChange.bind(this, key, relate)} />;
+                return <SelectFormItem editing form={form} label={label} required={required} value={{ [`__select_${key}`]: defaultValue }} options={options} unit={unit} onChange={watch && this.onItemChange.bind(this, 'select', key, watch)} />;
             }
             case 'radio': {
-                return <RadioFormItem editing form={form} label={label} value={{ [key]: defaultValue }} titles={titles} reverse={reverse} onChange={relate && this.onItemChange.bind(this, key, relate)}/>;
+                return <RadioFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} titles={titles} reverse={reverse} onChange={watch && this.onItemChange.bind(this, 'radio', key, watch)}/>;
             }
             case 'check': {
                 return group
                 &&
-                <CheckGroupFormItem editing form={form} label={label} list={group} value={{ [key]: defaultValue }} onChange={relate && this.onItemChange.bind(this, key, relate)} />
+                <CheckGroupFormItem editing form={form} label={label} required={required} list={group} value={{ [key]: defaultValue }} onChange={watch && this.onItemChange.bind(this, 'checkgroup', key, watch)} />
                 ||
-                <CheckFormItem editing form={form} label={label} value={{ [key]: defaultValue }} onChange={relate && this.onItemChange.bind(this, key, relate)} />;
+                <CheckFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} onChange={watch && this.onItemChange.bind(this, 'check', key, watch)} />;
             }
             case 'date': {
                 return _.isArray(defaultValue)
                 &&
-                <DateRangeFormItem editing form={form} label={label} value={{ [`__date_range_${key}`]: defaultValue.map(o=>moment(o)) }} showToday={showToday} showTime={showTime} format={format} range={range && range.map(o=>moment(o))} onChange={relate && this.onItemChange.bind(this, key, relate)} />
+                <DateRangeFormItem editing form={form} label={label} required={required} value={{ [`__date_range_${key}`]: defaultValue.map(o=>moment(o)) }} showToday={showToday} showTime={showTime} format={format} range={range && range.map(o=>moment(o))} onOk={watch && this.onItemChange.bind(this, 'daterange', key, watch)} />
                 ||
-                <DateFormItem editing form={form} label={label} value={{ [`__date_${key}`]: moment(defaultValue) }} showToday={showToday} showTime={showTime}  format={format} range={range && range.map(o=>moment(o))} onChange={relate && this.onItemChange.bind(this, key, relate)} />;
+                <DateFormItem editing form={form} label={label} required={required} value={{ [`__date_${key}`]: moment(defaultValue) }} showToday={showToday} showTime={showTime}  format={format} range={range && range.map(o=>moment(o))} onOk={watch && this.onItemChange.bind(this, 'date', key, watch)} />;
             }
             case 'star': {
-                return <StarFormItem editing form={form} label={label} value={{ [key]: defaultValue }} count={count} />;
+                return <StarFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} count={count} />;
             }
             case 'image': {
-                return <ImageFormItem editing form={form} label={label} value={{ [key]: defaultValue }} width={width} height={height} />;
+                return <ImageFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} width={width} height={height} />;
             }
             case 'imageList': {
-                return <ImageListFormItem editing form={form} label={label} value={{ [key]: defaultValue }} count={count} width={width} height={height} />;
+                return <ImageListFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} count={count} width={width} height={height} />;
             }
             case 'address': {
-                return <AddressFormItem editing form={form} label={label} value={{ [`__address_${key}`]: defaultValue || [] }} options={_.map(addressList, o => ({ value: o.name, label: o.name, code: o.code, level: o.level, isLeaf: o.isLeaf }))} ref={`_address_${key}FormItem`} />;
+                return <AddressFormItem editing form={form} label={label} required={required} value={{ [`__address_${key}`]: defaultValue || [] }} options={_.map(addressList, o => ({ value: o.name, label: o.name, code: o.code, level: o.level, isLeaf: o.isLeaf }))} ref={`_address_${key}FormItem`} />;
             }
             default: {
-                return <PlainFormItem label={label} value={defaultValue} unit={unit} />;
+                return <PlainFormItem label={label} required={required} value={defaultValue} unit={unit} />;
             }
         }
 
