@@ -5,10 +5,9 @@ import _ from 'lodash';
 import moment from 'moment';
 import { Form, Button, notification } from 'antd';
 import { PlainFormItem, TextFormItem, NumberFormItem, SelectFormItem, RadioFormItem, CheckFormItem, CheckGroupFormItem, DateFormItem, DateRangeFormItem, StarFormItem, ImageFormItem, ImageListFormItem, AddressFormItem } from 'components';
-import { showSuccess, showError, getCheckRules, getAddressOptions, post } from 'utils';
+import { showSuccess, showError, getCheckRules, post } from 'utils';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
-const addressList=[{"isLeaf":true,"id":1,"code":11,"parentCode":0,"name":"北京","level":0},{"isLeaf":true,"id":336,"code":12,"parentCode":0,"name":"天津","level":0},{"isLeaf":false,"id":632,"code":13,"parentCode":0,"name":"河北","level":2},{"isLeaf":false,"id":3098,"code":14,"parentCode":0,"name":"山西","level":2},{"isLeaf":false,"id":4666,"code":15,"parentCode":0,"name":"内蒙古","level":2},{"isLeaf":false,"id":5824,"code":21,"parentCode":0,"name":"辽宁","level":2},{"isLeaf":false,"id":7528,"code":22,"parentCode":0,"name":"吉林","level":2},{"isLeaf":false,"id":8555,"code":23,"parentCode":0,"name":"黑龙江","level":2},{"isLeaf":true,"id":10540,"code":31,"parentCode":0,"name":"上海","level":0},{"isLeaf":false,"id":10803,"code":32,"parentCode":0,"name":"江苏","level":2},{"isLeaf":false,"id":12591,"code":33,"parentCode":0,"name":"浙江","level":2},{"isLeaf":false,"id":14229,"code":34,"parentCode":0,"name":"安徽","level":2},{"isLeaf":false,"id":16063,"code":35,"parentCode":0,"name":"福建","level":2},{"isLeaf":false,"id":17354,"code":36,"parentCode":0,"name":"江西","level":2},{"isLeaf":false,"id":19275,"code":37,"parentCode":0,"name":"山东","level":2},{"isLeaf":false,"id":21382,"code":41,"parentCode":0,"name":"河南","level":2},{"isLeaf":false,"id":24017,"code":42,"parentCode":0,"name":"湖北","level":2},{"isLeaf":false,"id":25574,"code":43,"parentCode":0,"name":"湖南","level":2},{"isLeaf":false,"id":28235,"code":44,"parentCode":0,"name":"广东","level":2},{"isLeaf":false,"id":30163,"code":45,"parentCode":0,"name":"广西","level":2},{"isLeaf":false,"id":31562,"code":46,"parentCode":0,"name":"海南","level":2},{"isLeaf":false,"id":31928,"code":50,"parentCode":0,"name":"重庆","level":1},{"isLeaf":false,"id":33005,"code":51,"parentCode":0,"name":"四川","level":2},{"isLeaf":false,"id":37904,"code":52,"parentCode":0,"name":"贵州","level":2},{"isLeaf":false,"id":39555,"code":53,"parentCode":0,"name":"云南","level":2},{"isLeaf":false,"id":41102,"code":54,"parentCode":0,"name":"西藏","level":2},{"isLeaf":false,"id":41876,"code":61,"parentCode":0,"name":"陕西","level":2},{"isLeaf":false,"id":43775,"code":62,"parentCode":0,"name":"甘肃","level":2},{"isLeaf":false,"id":45285,"code":63,"parentCode":0,"name":"青海","level":2},{"isLeaf":false,"id":45752,"code":64,"parentCode":0,"name":"宁夏","level":2},{"isLeaf":false,"id":46046,"code":65,"parentCode":0,"name":"新疆","level":2}];
 
 @antd_form_create
 export default class MdocForm extends React.Component {
@@ -53,7 +52,7 @@ export default class MdocForm extends React.Component {
                     const key = k.replace(/^__address_/, '');
                     const item = _.find(model, o=>o.key===key);
                     value[key] = v.join('');
-                    if (item.hasLastCode) {
+                    if (typeof item.defaultValue === 'number') {
                         value[`${key}LastCode`] = this.refs[`_address_${key}FormItem`].getAddressLastCode();
                     }
                 }
@@ -93,11 +92,13 @@ export default class MdocForm extends React.Component {
                 value = value * 1;
             }
         }
-        if (typeof watch === 'function') {
-            watch(value);
-        } else {
-            let _model;
-            watch.forEach(o=>{
+        !_.isArray(watch) && (watch = [watch]);
+        let _model;
+        let needUpdate = false;
+        watch.forEach(o=>{
+            if (typeof o === 'function') {
+                o(value);
+            } else {
                 const item = _.find(model, m=>m.key===o.key);
                 if (o.affect === 'visible') {
                     item[o.affect] = o.calc(value);
@@ -107,7 +108,10 @@ export default class MdocForm extends React.Component {
                     item['visible'] = false;
                     _item[o.affect] = o.calc(value);
                 }
-            });
+                needUpdate = true;
+            }
+        });
+        if (needUpdate) {
             this.setState({ model }, ()=>{
                 _model && this.setState({ model: _model });
             });
@@ -140,6 +144,7 @@ export default class MdocForm extends React.Component {
             count,
             width,
             height,
+            addressType,
         } = item;
         if (!visible) {
             return null;
@@ -182,7 +187,7 @@ export default class MdocForm extends React.Component {
                 return <ImageListFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} count={count} width={width} height={height} />;
             }
             case 'address': {
-                return <AddressFormItem editing form={form} label={label} required={required} value={{ [`__address_${key}`]: defaultValue || [] }} options={_.map(addressList, o => ({ value: o.name, label: o.name, code: o.code, level: o.level, isLeaf: o.isLeaf }))} ref={`_address_${key}FormItem`} />;
+                return <AddressFormItem editing form={form} label={label} type={addressType} required={required} value={{ [`__address_${key}`]: defaultValue }} ref={`_address_${key}FormItem`} onChange={watch && this.onItemChange.bind(this, 'address', key, watch)}/>;
             }
             default: {
                 return <PlainFormItem label={label} required={required} value={defaultValue} unit={unit} />;

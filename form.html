@@ -18,13 +18,24 @@
                 label: '状态',
                 defaultValue: '进行中',
             },
-            // {
-            //     label: '地址',
-            //     key: 'address',
-            //     type: 'address',
-            //     defaultValue: ['贵州'],
-            //     hasLastCode: true,
-            // },
+            {
+                label: '地址',
+                key: 'address',
+                type: 'address',
+                defaultValue: '贵州',
+                watch: [
+                    (v)=>console.log(v),
+                    { key: 'cityAddress', affect: 'visible', calc: o=>o.isLeaf },
+                    { key: 'cityAddress', affect: 'defaultValue', calc: o=>-o.lastCode },
+                ],
+            },
+            {
+                label: '详细地址',
+                key: 'cityAddress',
+                type: 'address',
+                visible: false,
+                addressType: 1, //0: 长途 1: 短途 2: 所有地址
+            },
             // {
             //     label: '图片',
             //     key: 'image',
@@ -56,7 +67,7 @@
                 maxLength: 10,
                 defaultValue: '方运江',
                 watch: true,
-                watch: (v)=>console.log(v)
+                watch: (v)=>console.log(v),
             },
             {
                 label: '职位',
