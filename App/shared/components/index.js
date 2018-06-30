@@ -13,6 +13,7 @@ export RadioFormItem from './form/RadioFormItem';
 export AddressFormItem from './form/AddressFormItem';
 export StarFormItem from './form/StarFormItem';
 export FileFormItem from './form/FileFormItem';
+export SliderFormItem from './form/SliderFormItem';
 
 // table
 export TableContainer from './table/TableContainer';

@@ -4,7 +4,7 @@ import styles from './index.less';
 import _ from 'lodash';
 import moment from 'moment';
 import { Form, Button, notification } from 'antd';
-import { PlainFormItem, TextFormItem, NumberFormItem, SelectFormItem, RadioFormItem, CheckFormItem, CheckGroupFormItem, DateFormItem, DateRangeFormItem, StarFormItem, ImageFormItem, ImageListFormItem, AddressFormItem } from 'components';
+import { PlainFormItem, TextFormItem, NumberFormItem, SliderFormItem, SelectFormItem, RadioFormItem, CheckFormItem, CheckGroupFormItem, DateFormItem, DateRangeFormItem, StarFormItem, ImageFormItem, ImageListFormItem, AddressFormItem } from 'components';
 import { showSuccess, showError, getCheckRules, post } from 'utils';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -119,9 +119,10 @@ export default class MdocForm extends React.Component {
     }
     renderFormItem(item) {
         const { form } = this.props;
-        const {
+        let {
             visible = true,
             watch,
+            afterWatch,
             type,
             label,
             key,
@@ -145,6 +146,8 @@ export default class MdocForm extends React.Component {
             width,
             height,
             addressType,
+            marks,
+            dots,
         } = item;
         if (!visible) {
             return null;
@@ -155,7 +158,32 @@ export default class MdocForm extends React.Component {
                 return <TextFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} maxLength={maxLength} rules={rules}  onChange={watch && this.onItemChange.bind(this, 'text', key, watch)} />;
             }
             case 'number': {
-                return <NumberFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} min={min} step={step} max={max} maxLength={maxLength} rules={rules} precision={precision} unit={unit}  onChange={watch && this.onItemChange.bind(this, 'number', key, watch)} />;
+                return <NumberFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} min={min} step={step} max={max} rules={rules} precision={precision} unit={unit} onChange={watch && this.onItemChange.bind(this, 'number', key, watch)} />;
+            }
+            case 'slider': {
+                if (!marks) {
+                    const len = (max - min) / step;
+                    let _step = 1;
+                    for (const i of [5, 4, 3, 2]) {
+                        if (len % i === 0) {
+                            _step = len / i;
+                            break;
+                        }
+                    }
+                    marks = [];
+                    let num = min;
+                    while (num <= max) {
+                        marks.push(num);
+                        num += _step;
+                    }
+                }
+                if (_.isArray(marks)) {
+                    marks = _.mapValues(_.zipObject(marks, marks), v=>`${v}${unit||''}`);
+                }
+                if (dots) {
+                    step = null;
+                }
+                return <SliderFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} min={min} step={step} max={max}  rules={rules} marks={marks} dots={dots} range={range} unit={unit} onChange={watch && this.onItemChange.bind(this, 'number', key, watch)} onAfterChange={afterWatch && this.onItemChange.bind(this, 'number', key, afterWatch)} />;
             }
             case 'select': {
                 return <SelectFormItem editing form={form} label={label} required={required} value={{ [`__select_${key}`]: defaultValue }} options={options} unit={unit} onChange={watch && this.onItemChange.bind(this, 'select', key, watch)} />;
