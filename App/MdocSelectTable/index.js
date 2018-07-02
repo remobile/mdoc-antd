@@ -9,6 +9,7 @@ export default class MdocSelectTable extends React.Component {
         pageSize: 30,
         listName: 'list',
         params: {},
+        width: 800,
     };
     state = {
         params: this.props.params,
@@ -52,7 +53,7 @@ export default class MdocSelectTable extends React.Component {
         };
         return (
             visible &&
-            <Modal title={title} visible className={hasOkButton ? styles.branchShopModal : styles.branchShopModalNoButton} onCancel={::this.hide} onOk={::this.handleOk} okText='选择' cancelText='取消'>
+            <Modal title={title} visible className={hasOkButton ? styles.branchShopModal : styles.branchShopModalNoButton} bodyStyle={{width}} onCancel={::this.hide} onOk={::this.handleOk} okText='选择' cancelText='取消'>
                 <TableContainer onSearch={::this.onSearch} >
                     <Component
                         ref={(ref) => { this.table = ref; }}
