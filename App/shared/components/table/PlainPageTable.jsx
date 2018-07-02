@@ -92,6 +92,7 @@ export default class PlainPageTable extends React.Component {
             className,
             scrollX,
             rowKey,
+            rowSelection,
         } = this.props;
         const total = list.length;
         const pagination = {
@@ -129,6 +130,7 @@ export default class PlainPageTable extends React.Component {
                     loading={loading}
                     pagination={noFooter !== true && pagination}
                     dataSource={list}
+                    rowSelection={rowSelection}
                     {...(scrollX ? { scroll: { x: scrollX } } : {})}
                     onRow={::this.onRow} />
             </div>

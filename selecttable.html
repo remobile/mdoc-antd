@@ -10,13 +10,17 @@
 </head>
 <body>
     <button type="button" onclick="showSelectTable()">显示</button>
+    <div id="app"></div>
     <script>
     function showSelectTable() {
-        renderSelectTable({
+        renderSelectTable('app', {
+            title: '选择分店',
             hasTotalCount: true,
             pageSize: 2,
             url: '/api/shop/getBranchShopList',
             listName: 'branchShopList',
+            onSelect: (o)=>console.log(o),
+            multi: true,
             columns: [{
                 title: '分店名称',
                 dataIndex: 'name',

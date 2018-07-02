@@ -84,6 +84,7 @@ export default class PlainTable extends React.Component {
             className,
             scrollX,
             rowKey,
+            rowSelection,
         } = this.props;
         const pagination = {
             total: totalCount,
@@ -111,6 +112,7 @@ export default class PlainTable extends React.Component {
                     loading={loading}
                     pagination={noFooter !== true && pagination}
                     dataSource={list}
+                    rowSelection={rowSelection}
                     {...(scrollX ? { scroll: { x: scrollX } } : {})}
                     onRow={::this.onRow} />
             </div>

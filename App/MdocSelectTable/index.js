@@ -16,11 +16,11 @@ export default class MdocSelectTable extends React.Component {
         visible: true,
         hasOkButton: false,
     };
-    show () {
-        this.setState({ visible: true });
+    componentWillReceiveProps(nextProps) {
+        this.setState({ visible: true, selects: [] });
     }
     hide () {
-        this.setState({ visible: false, selects: [] });
+        this.setState({ visible: false });
     }
     refresh () {
         this.table.refresh();
@@ -37,7 +37,7 @@ export default class MdocSelectTable extends React.Component {
     }
     render () {
         const { params, selects, visible, hasOkButton } = this.state;
-        const { hasTotalCount, url, listName, pageSize, columns, rejectIds, multi, onSelect } = this.props;
+        const { title, hasTotalCount, url, listName, pageSize, columns, rejectIds, multi, onSelect, width } = this.props;
         const Component = hasTotalCount ? PlainTable : PlainPageTable;
         const selectedIds = selects.map(o => o.id);
         const rowSelection = {
@@ -47,12 +47,12 @@ export default class MdocSelectTable extends React.Component {
                 this.setState({ selects: selectedRows, hasOkButton : !!selectedRows.length });
             },
             getCheckboxProps: record => ({
-                disabled: !!_.find(selects, o=>o.id === record.id),
+                disabled: multi ? false : !!_.find(selects, o=>o.id === record.id),
             }),
         };
         return (
             visible &&
-            <Modal title={'选择分店'} visible className={hasOkButton ? styles.branchShopModal : styles.branchShopModalNoButton} onCancel={::this.hide} onOk={::this.handleOk}>
+            <Modal title={title} visible className={hasOkButton ? styles.branchShopModal : styles.branchShopModalNoButton} onCancel={::this.hide} onOk={::this.handleOk} okText='选择' cancelText='取消'>
                 <TableContainer onSearch={::this.onSearch} >
                     <Component
                         ref={(ref) => { this.table = ref; }}

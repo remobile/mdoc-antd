@@ -19,9 +19,9 @@ export function renderTable(el, options) {
     );
 }
 
-export function renderSelectTable(options) {
+export function renderSelectTable(el, options) {
     ReactDOM.render(
         React.createElement(MdocSelectTable, options),
-        document.body,
+        typeof el === 'string' ? document.getElementById(el) : el
     );
 }
