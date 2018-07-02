@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <link rel="stylesheet" type="text/css" href="./build/mdoc-form.css">
+    <script src="./thirdparty/react.min.js"></script>
+    <script src="./thirdparty/react-dom.min.js"></script>
+    <script src="./build/mdoc-form.js"></script>
+</head>
+<body>
+    <button type="button" onclick="showSelectTable()">显示</button>
+    <script>
+    function showSelectTable() {
+        renderSelectTable({
+            hasTotalCount: true,
+            pageSize: 2,
+            url: '/api/shop/getBranchShopList',
+            listName: 'branchShopList',
+            columns: [{
+                title: '分店名称',
+                dataIndex: 'name',
+            }, {
+                title: '分层比例',
+                dataIndex: 'profitRate',
+                width: 100,
+                render: (data = {}) => `${data * 100}%`,
+            }, {
+                title: '分店董事长',
+                dataIndex: 'chairMan',
+                render: (data = {}) => `${data.name}(${data.phone})`,
+            }, {
+                title: '所在地',
+                dataIndex: 'addressRegion',
+            }, {
+                title: '地址',
+                dataIndex: 'address',
+            }, {
+                title: '联系电话',
+                dataIndex: 'phoneList',
+            }],
+        });
+    }
+    </script>
+</body>
+</html>
