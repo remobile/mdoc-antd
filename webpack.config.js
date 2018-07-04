@@ -44,9 +44,9 @@ var commonLoaders = [
 
 module.exports = [
     {
-        name: 'mdoc-form',
+        name: 'mdoc-antd',
         entry: {
-            'mdoc-form': ['./App/index.js'],
+            'mdoc-antd': ['./App/index.js'],
         },
         output: {
             path: './build',
