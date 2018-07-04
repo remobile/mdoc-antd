@@ -9,42 +9,52 @@
     <script src="./build/mdoc-form.js"></script>
 </head>
 <body>
-    <button type="button" onclick="showSelectTable()">显示</button>
+    <button type="button" onclick="showSelectTable(4)">显示</button>
     <div id="app"></div>
     <script>
-    function showSelectTable() {
-        renderSelectTable('app', {
-            title: '选择分店',
-            hasTotalCount: true,
-            pageSize: 2,
-            width: 1000,
-            url: '/api/shop/getBranchShopList',
-            listName: 'branchShopList',
-            onSelect: (o)=>console.log(o),
-            multi: true,
-            columns: [{
-                title: '分店名称',
-                dataIndex: 'name',
-            }, {
-                title: '分层比例',
-                dataIndex: 'profitRate',
-                width: 100,
-                render: (data = {}) => `${data * 100}%`,
-            }, {
-                title: '分店董事长',
-                dataIndex: 'chairMan',
-                render: (data = {}) => `${data.name}(${data.phone})`,
-            }, {
-                title: '所在地',
-                dataIndex: 'addressRegion',
-            }, {
-                title: '地址',
-                dataIndex: 'address',
-            }, {
-                title: '联系电话',
-                dataIndex: 'phoneList',
-            }],
-        });
+    function showSelectTable(type) {
+        if (type === 0) {
+            antd.renderSelectTable('app', {
+                title: '选择分店',
+                hasTotalCount: true,
+                pageSize: 2,
+                width: 1000,
+                url: '/api/shop/getBranchShopList',
+                listName: 'branchShopList',
+                onSelect: (o)=>console.log(o),
+                multi: true,
+                columns: [{
+                    title: '分店名称',
+                    dataIndex: 'name',
+                }, {
+                    title: '分层比例',
+                    dataIndex: 'profitRate',
+                    width: 100,
+                    render: (data = {}) => `${data * 100}%`,
+                }, {
+                    title: '分店董事长',
+                    dataIndex: 'chairMan',
+                    render: (data = {}) => `${data.name}(${data.phone})`,
+                }, {
+                    title: '所在地',
+                    dataIndex: 'addressRegion',
+                }, {
+                    title: '地址',
+                    dataIndex: 'address',
+                }, {
+                    title: '联系电话',
+                    dataIndex: 'phoneList',
+                }],
+            });
+        } else if (type === 1) {
+            antd.confirm({pre: '确认要删除', name: '四面通', post: '这家物流公司' }, ()=>console.log('ok'));
+        } else if (type === 2) {
+            antd.confirmWithPassword({pre: '确认要删除', name: '四面通', post: '这家物流公司', type: '支付' }, (o)=>console.log(o));
+        } else if (type === 3) {
+            antd.showSuccess('创建成功', '提示');
+        } else if (type === 4) {
+            antd.showSuccess('创建失败', '警告');
+        }
     }
     </script>
 </body>

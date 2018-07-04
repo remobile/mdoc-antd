@@ -35,37 +35,6 @@ export function confirmWithPassword ({ pre, name, post = '', type = '登录' }, 
         onOk: () => onOk(password),
     });
 }
-export function confirmForbidClose ({ pre, name, post = '' }) {
-    return () => new Promise(resolve => {
-        Modal.confirm({
-            title: '警告',
-            content: (
-                <div style={{ paddingTop: 10, fontSize: 14 }}>
-                    {pre}{name && <span style={{ color: 'red' }}>{name}</span>}{post}，是否坚持离开该页面？
-                </div>
-            ),
-            okText: '确定',
-            cancelText: '取消',
-            onOk: () => { resolve(false); },
-            onCancel: () => { resolve(true); },
-        });
-    });
-}
-export function handleEditCancel () {
-    Modal.confirm({
-        title: '提示',
-        content: (
-            <div style={{ paddingTop: 10, fontSize: 14 }}>
-                确定取消修改吗？
-            </div>
-        ),
-        okText: '确定',
-        cancelText: '取消',
-        onOk: () => {
-            this.setState({ pageData: _.cloneDeep(this.state.origin), editing: false });
-        },
-    });
-}
 export function showSuccess (info, title) {
     notification.success({ key:'success', description: info, message: title });
 }
