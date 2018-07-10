@@ -34,19 +34,7 @@
                 key: 'password',
                 type: 'text',
                 maxLength: 20,
-                rules: function (rule, value, callback) {
-                    if (!value) {
-                        callback();
-                    } else if (!/^[\x21-\x7e]{6,20}$/.test(value)) {
-                        callback('密码只能由6-20位数字，大小写字母和英文符号组成');
-                    } else {
-                        const { validateFields } = this.props.form;
-                        if (value) {
-                            validateFields(['rePassword'], { force: true });
-                        }
-                        callback();
-                    }
-                },
+                rules: 'password->rePassword',
             },
             {
                 label: '确认密码',
@@ -54,14 +42,7 @@
                 type: 'text',
                 placeholder: '两次输入密码保持一致',
                 maxLength: 20,
-                rules: function (rule, value, callback) {
-                    const { getFieldValue } = this.props.form;
-                    if (value && value !== getFieldValue('password')) {
-                        callback('两次输入密码不一致');
-                    } else {
-                        callback();
-                    }
-                },
+                rules: 'password<-password',
             },
             {
                 label: '业务员',

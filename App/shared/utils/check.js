@@ -166,6 +166,35 @@ export function getCheckRules(_this, rules) {
             }
         } } ];
     }
+    // 特殊处理
+    if (/password->/.test(rules)) {
+        const items = rules.split('->');
+        return [ { validator: function (rule, value, callback) {
+            if (!value) {
+                callback();
+            } else if (!/^[\x21-\x7e]{6,20}$/.test(value)) {
+                callback('密码只能由6-20位数字，大小写字母和英文符号组成');
+            } else {
+                const { validateFields } = _this.props.form;
+                if (value) {
+                    validateFields([items[1]], { force: true });
+                }
+                callback();
+            }
+        } } ];
+    }
+    if (/password<-/.test(rules)) {
+        const items = rules.split('<-');
+        return [ { validator: function (rule, value, callback) {
+            const { getFieldValue } = _this.props.form;
+            if (value && value !== getFieldValue(items[1])) {
+                callback('两次输入密码不一致');
+            } else {
+                callback();
+            }
+        } } ];
+    }
+
     // 默认规则
     const maps = {
         telephone: checkTelePhone,
