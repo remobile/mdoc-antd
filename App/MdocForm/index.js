@@ -23,7 +23,7 @@ export default class MdocForm extends React.Component {
     }
     handleSubmit (e) {
         e.preventDefault();
-        const { form, url, params } = this.props;
+        const { form, url, params, onSuccess } = this.props;
         const { model } = this.state;
         form.validateFields((errors, value) => {
             if (errors) {
@@ -65,6 +65,7 @@ export default class MdocForm extends React.Component {
                     showError(ret.msg);
                 } else {
                     showSuccess('提交成功');
+                    onSuccess && onSuccess(ret.context);
                 }
             });
         });
