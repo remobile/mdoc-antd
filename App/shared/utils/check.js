@@ -148,10 +148,15 @@ function checkInt2PointNum (rule, str, callback) {
     }
 }
 
-export function getCheckRules(rules) {
+export function getCheckRules(_this, rules) {
     if (!rules) {
         return undefined;
     }
+    // 函数
+    if (typeof rules === 'function') {
+        return [ { validator: rules.bind(_this) } ];
+    }
+    // 正则表达式
     if (typeof rules === 'object' && rules.reg instanceof RegExp) {
         return [ { validator: function(rule, str, callback) {
             if (!rules.reg.test(str)) {
@@ -161,10 +166,20 @@ export function getCheckRules(rules) {
             }
         } } ];
     }
+    // 默认规则
     const maps = {
         telephone: checkTelePhone,
         sitephone: checkSitePhone,
         phone: checkPhone,
+        phoneList: checkPhoneList,
+        verifyCode: checkVerifyCode,
+        password: checkPassword,
+        qq: checkQQ,
+        identifyNumber: checkIdentifyNumber,
+        tax: checkTax,
+        plateNo: checkPlateNo,
+        age: checkAge,
+        email: checkEmail,
     };
 
     return [ { validator: maps[rules] } ];

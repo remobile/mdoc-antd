@@ -148,17 +148,18 @@ export default class MdocForm extends React.Component {
             addressType,
             marks,
             dots,
+            disabled,
         } = item;
         if (!visible) {
             return null;
         }
-        const rules = getCheckRules(item.rules);
+        const rules = getCheckRules(this, item.rules);
         switch (type) {
             case 'text': {
-                return <TextFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} maxLength={maxLength} rules={rules}  onChange={watch && this.onItemChange.bind(this, 'text', key, watch)} />;
+                return <TextFormItem editing form={form} label={label} required={required} disabled={disabled} value={{ [key]: defaultValue }} maxLength={maxLength} rules={rules}  onChange={watch && this.onItemChange.bind(this, 'text', key, watch)} />;
             }
             case 'number': {
-                return <NumberFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} min={min} step={step} max={max} rules={rules} precision={precision} unit={unit} onChange={watch && this.onItemChange.bind(this, 'number', key, watch)} />;
+                return <NumberFormItem editing form={form} label={label} required={required} disabled={disabled} value={{ [key]: defaultValue }} min={min} step={step} max={max} rules={rules} precision={precision} unit={unit} onChange={watch && this.onItemChange.bind(this, 'number', key, watch)} />;
             }
             case 'slider': {
                 if (!marks) {
@@ -183,42 +184,42 @@ export default class MdocForm extends React.Component {
                 if (dots) {
                     step = null;
                 }
-                return <SliderFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} min={min} step={step} max={max}  rules={rules} marks={marks} dots={dots} range={range} unit={unit} onChange={watch && this.onItemChange.bind(this, 'number', key, watch)} onAfterChange={afterWatch && this.onItemChange.bind(this, 'number', key, afterWatch)} />;
+                return <SliderFormItem editing form={form} label={label} required={required} disabled={disabled} value={{ [key]: defaultValue }} min={min} step={step} max={max}  rules={rules} marks={marks} dots={dots} range={range} unit={unit} onChange={watch && this.onItemChange.bind(this, 'number', key, watch)} onAfterChange={afterWatch && this.onItemChange.bind(this, 'number', key, afterWatch)} />;
             }
             case 'select': {
-                return <SelectFormItem editing form={form} label={label} required={required} value={{ [`__select_${key}`]: defaultValue }} options={options} unit={unit} onChange={watch && this.onItemChange.bind(this, 'select', key, watch)} />;
+                return <SelectFormItem editing form={form} label={label} required={required} disabled={disabled} value={{ [`__select_${key}`]: defaultValue }} options={options} unit={unit} onChange={watch && this.onItemChange.bind(this, 'select', key, watch)} />;
             }
             case 'radio': {
-                return <RadioFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} titles={titles} reverse={reverse} onChange={watch && this.onItemChange.bind(this, 'radio', key, watch)}/>;
+                return <RadioFormItem editing form={form} label={label} required={required} disabled={disabled} value={{ [key]: defaultValue }} titles={titles} reverse={reverse} onChange={watch && this.onItemChange.bind(this, 'radio', key, watch)}/>;
             }
             case 'check': {
                 return group
                 &&
-                <CheckGroupFormItem editing form={form} label={label} required={required} list={group} value={{ [key]: defaultValue }} onChange={watch && this.onItemChange.bind(this, 'checkgroup', key, watch)} />
+                <CheckGroupFormItem editing form={form} label={label} required={required} disabled={disabled} list={group} value={{ [key]: defaultValue }} onChange={watch && this.onItemChange.bind(this, 'checkgroup', key, watch)} />
                 ||
-                <CheckFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} onChange={watch && this.onItemChange.bind(this, 'check', key, watch)} />;
+                <CheckFormItem editing form={form} label={label} required={required} disabled={disabled} value={{ [key]: defaultValue }} onChange={watch && this.onItemChange.bind(this, 'check', key, watch)} />;
             }
             case 'date': {
                 return _.isArray(defaultValue)
                 &&
-                <DateRangeFormItem editing form={form} label={label} required={required} value={{ [`__date_range_${key}`]: defaultValue.map(o=>moment(o)) }} showToday={showToday} showTime={showTime} format={format} range={range && range.map(o=>moment(o))} onOk={watch && this.onItemChange.bind(this, 'daterange', key, watch)} />
+                <DateRangeFormItem editing form={form} label={label} required={required} disabled={disabled} value={{ [`__date_range_${key}`]: defaultValue.map(o=>moment(o)) }} showToday={showToday} showTime={showTime} format={format} range={range && range.map(o=>moment(o))} onOk={watch && this.onItemChange.bind(this, 'daterange', key, watch)} />
                 ||
-                <DateFormItem editing form={form} label={label} required={required} value={{ [`__date_${key}`]: moment(defaultValue) }} showToday={showToday} showTime={showTime}  format={format} range={range && range.map(o=>moment(o))} onOk={watch && this.onItemChange.bind(this, 'date', key, watch)} />;
+                <DateFormItem editing form={form} label={label} required={required} disabled={disabled} value={{ [`__date_${key}`]: moment(defaultValue) }} showToday={showToday} showTime={showTime}  format={format} range={range && range.map(o=>moment(o))} onOk={watch && this.onItemChange.bind(this, 'date', key, watch)} />;
             }
             case 'star': {
-                return <StarFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} count={count} />;
+                return <StarFormItem editing form={form} label={label} required={required} disabled={disabled} value={{ [key]: defaultValue }} count={count} />;
             }
             case 'image': {
-                return <ImageFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} width={width} height={height} />;
+                return <ImageFormItem editing form={form} label={label} required={required} disabled={disabled} value={{ [key]: defaultValue }} width={width} height={height} />;
             }
             case 'imageList': {
-                return <ImageListFormItem editing form={form} label={label} required={required} value={{ [key]: defaultValue }} count={count} width={width} height={height} />;
+                return <ImageListFormItem editing form={form} label={label} required={required} disabled={disabled} value={{ [key]: defaultValue }} count={count} width={width} height={height} />;
             }
             case 'address': {
-                return <AddressFormItem editing form={form} label={label} type={addressType} required={required} value={{ [`__address_${key}`]: defaultValue }} ref={`_address_${key}FormItem`} onChange={watch && this.onItemChange.bind(this, 'address', key, watch)}/>;
+                return <AddressFormItem editing form={form} label={label} type={addressType} required={required} disabled={disabled} value={{ [`__address_${key}`]: defaultValue }} ref={`_address_${key}FormItem`} onChange={watch && this.onItemChange.bind(this, 'address', key, watch)}/>;
             }
             default: {
-                return <PlainFormItem label={label} required={required} value={defaultValue} unit={unit} />;
+                return <PlainFormItem label={label} required={required} disabled={disabled} value={defaultValue} unit={unit} />;
             }
         }
 

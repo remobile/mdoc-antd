@@ -46,7 +46,7 @@ module.exports = [
     {
         name: 'mdoc-antd',
         entry: {
-            'mdoc-antd': ['./App/index.js'],
+            'mdoc-antd': ['./App/form.js'],
         },
         output: {
             path: './build',
@@ -67,7 +67,7 @@ module.exports = [
             }),
             new webpack.optimize.OccurenceOrderPlugin(),
             new webpack.optimize.DedupePlugin(),
-            new webpack.optimize.UglifyJsPlugin(),
+            // new webpack.optimize.UglifyJsPlugin(),
             new ExtractTextPlugin('[name].css', {allChunks: true}),
         ],
         module: {

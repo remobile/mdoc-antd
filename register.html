@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <link rel="stylesheet" type="text/css" href="./build/mdoc-antd.css">
+    <script src="./thirdparty/react.min.js"></script>
+    <script src="./thirdparty/react-dom.min.js"></script>
+    <script src="./build/mdoc-antd.js"></script>
+</head>
+<body>
+    <div id="app" style="width:800px;margin-top:100px;margin-left:200px;"></div>
+    <script>
+    antd.renderForm('app', {
+        url: '/api/admin/test',
+        model: [
+            {
+                label: '手机号码',
+                key: 'phone',
+                type: 'text',
+                rules: 'telephone',
+                maxLength: 11,
+            },
+            {
+                label: '验证码',
+                key: 'verifyCode',
+                type: 'text',
+                rules: 'verifyCode',
+                maxLength: 6,
+
+            },
+            {
+                label: '密码',
+                key: 'password',
+                type: 'text',
+                maxLength: 20,
+                rules: function (rule, value, callback) {
+                    if (!value) {
+                        callback();
+                    } else if (!/^[\x21-\x7e]{6,20}$/.test(value)) {
+                        callback('密码只能由6-20位数字，大小写字母和英文符号组成');
+                    } else {
+                        const { validateFields } = this.props.form;
+                        if (value) {
+                            validateFields(['rePassword'], { force: true });
+                        }
+                        callback();
+                    }
+                },
+            },
+            {
+                label: '确认密码',
+                key: 'rePassword',
+                type: 'text',
+                placeholder: '两次输入密码保持一致',
+                maxLength: 20,
+                rules: function (rule, value, callback) {
+                    const { getFieldValue } = this.props.form;
+                    if (value && value !== getFieldValue('password')) {
+                        callback('两次输入密码不一致');
+                    } else {
+                        callback();
+                    }
+                },
+            },
+            {
+                label: '业务员',
+                key: 'salesmanPhone',
+                type: 'text',
+                disabled: true,
+                defaultValue: '18085192480',
+            },
+        ],
+    });
+    </script>
+</body>
+</html>
