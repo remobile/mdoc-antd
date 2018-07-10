@@ -11,6 +11,9 @@ export function getFormItemLayout (layout, formGroup, hasOffset) {
     if (formGroup) {
         return {};
     }
+    if (document.body.clientWidth <= 735) {
+        return {};
+    }
     return {
         labelCol: { span: layout && layout[0] ? layout[0] : 4 },
         wrapperCol: { span: layout ? (layout[1] ? layout[1] : 16 - layout[0]) : 12, offset: hasOffset ? (layout && layout[0] ? layout[0] : 4) : 0 },
