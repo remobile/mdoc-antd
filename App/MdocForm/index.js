@@ -23,7 +23,7 @@ export default class MdocForm extends React.Component {
     }
     handleSubmit (e) {
         e.preventDefault();
-        const { form, url } = this.props;
+        const { form, url, params } = this.props;
         const { model } = this.state;
         form.validateFields((errors, value) => {
             if (errors) {
@@ -58,8 +58,7 @@ export default class MdocForm extends React.Component {
                 }
             });
             value = _.omitBy(value, (v, k) => /^__.*/.test(k));
-            console.log(value);
-            return;
+            params && Object.assign(value, params);
 
             post(url, value).then((ret)=>{
                 if (!ret.success) {
