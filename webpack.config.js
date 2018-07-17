@@ -46,7 +46,7 @@ module.exports = [
     {
         name: 'mdoc-antd',
         entry: {
-            'mdoc-antd': ['./App/form.js'],
+            'antd': ['./App/index.js'],
         },
         output: {
             path: './build',

@@ -3,7 +3,7 @@ import antd_form_create from 'decorators/antd_form_create';
 import styles from './index.less';
 import _ from 'lodash';
 import moment from 'moment';
-import { Form, Button, notification } from 'antd';
+import { Form, Button } from 'antd';
 import { PlainFormItem, TextFormItem, NumberFormItem, SliderFormItem, SelectFormItem, RadioFormItem, CheckFormItem, CheckGroupFormItem, DateFormItem, DateRangeFormItem, StarFormItem, ImageFormItem, ImageListFormItem, AddressFormItem } from 'components';
 import { showSuccess, showError, getCheckRules, post } from 'utils';
 
@@ -14,13 +14,6 @@ export default class MdocForm extends React.Component {
     state = {
         model: this.props.model,
     };
-    componentDidMount () {
-        notification.config({
-            placement: 'bottomLeft',
-            bottom: 30,
-            duration: 3,
-        });
-    }
     handleSubmit (e) {
         e.preventDefault();
         const { form, url, params, onSuccess } = this.props;

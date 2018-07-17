@@ -1,9 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { notification } from 'antd';
 import MdocForm from './MdocForm';
 import MdocTable from './MdocTable';
 import MdocSelectTable from './MdocSelectTable';
 import { confirm, confirmWithPassword, showSuccess, showError, } from 'utils/confirm';
+
+notification.config({
+    placement: 'bottomLeft',
+    bottom: 30,
+    duration: 3,
+});
 
 export const antd = {
     confirm,
