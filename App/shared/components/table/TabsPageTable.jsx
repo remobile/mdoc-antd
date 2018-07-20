@@ -9,7 +9,7 @@ const TabPane = Tabs.TabPane;
 
 export default class TabsPageTable extends React.Component {
     static defaultProps = {
-        className: styles.container,
+        className: styles.tableContainer,
     };
     state = {
         loading: false,
